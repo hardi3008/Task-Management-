@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Biziverse Founder Dashboard</title>
+    <title>Biziverse Project Master</title>
     <style>
         :root {
             --biz-navy: #0d2144;
@@ -16,54 +16,50 @@
         
         .header-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px; border-bottom: 3px solid var(--biz-navy); padding-bottom: 15px; }
         
-        /* The Magic Today Button */
         .today-btn { 
             background: var(--biz-orange); color: white; border: none; padding: 12px 24px; 
             border-radius: 25px; font-weight: bold; cursor: pointer; box-shadow: 0 4px 15px rgba(255,109,0,0.3);
             transition: 0.3s;
         }
-        .today-btn:hover { transform: scale(1.05); background: var(--biz-navy); }
+        .today-btn:hover { background: var(--biz-navy); transform: scale(1.05); }
 
         .grid-container { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 20px; }
 
-        .category-card { background: white; border-radius: 12px; padding: 20px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); position: relative; }
-        .category-title { font-size: 1.1rem; font-weight: 800; margin-bottom: 15px; color: var(--biz-navy); border-left: 4px solid var(--biz-orange); padding-left: 10px; }
+        .category-card { background: white; border-radius: 12px; padding: 20px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); }
+        .category-title { font-size: 1.1rem; font-weight: 800; margin-bottom: 15px; color: var(--biz-navy); border-left: 5px solid var(--biz-orange); padding-left: 10px; }
 
         .bubble-area { display: flex; flex-wrap: wrap; gap: 12px; }
 
         .task-bubble {
             background: white; border: 2px solid var(--biz-blue); border-radius: 50%;
-            width: 90px; height: 90px; display: flex; flex-direction: column;
+            width: 95px; height: 95px; display: flex; flex-direction: column;
             align-items: center; justify-content: center; text-align: center;
-            font-size: 10px; font-weight: 600; cursor: pointer; transition: 0.2s; position: relative;
+            font-size: 11px; font-weight: 600; cursor: pointer; transition: 0.2s; position: relative;
         }
-        .task-bubble:hover { border-color: var(--biz-orange); background: #fdfdfd; }
+        .task-bubble:hover { border-color: var(--biz-orange); transform: translateY(-3px); }
 
         .founder-tag {
-            position: absolute; bottom: -5px; background: var(--biz-navy); color: white;
-            padding: 2px 8px; border-radius: 10px; font-size: 9px; white-space: nowrap;
+            position: absolute; bottom: -8px; background: var(--biz-navy); color: white;
+            padding: 2px 10px; border-radius: 12px; font-size: 9px; white-space: nowrap;
+            border: 1px solid var(--biz-orange); transition: 0.3s;
         }
+        .task-bubble:hover .founder-tag { background: var(--biz-orange); }
 
-        /* Modal / Report Styling */
+        /* Report Modal */
         #report-overlay {
             display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(13, 33, 68, 0.9); z-index: 1000; justify-content: center; align-items: center;
+            background: rgba(13, 33, 68, 0.95); z-index: 1000; justify-content: center; align-items: center;
         }
-        .report-content { 
-            background: white; padding: 30px; border-radius: 15px; width: 80%; max-width: 600px; 
-            max-height: 80vh; overflow-y: auto; color: var(--biz-navy);
-        }
-        .report-item { margin-bottom: 20px; padding-bottom: 10px; border-bottom: 1px solid #eee; }
-        .report-item h3 { color: var(--biz-orange); margin: 0 0 5px 0; }
-        .close-report { float: right; cursor: pointer; font-weight: bold; color: var(--biz-orange); }
-
-        .add-btn { border: 2px dashed var(--biz-gray); color: #999; font-size: 24px; }
+        .report-content { background: white; padding: 30px; border-radius: 15px; width: 90%; max-width: 500px; color: var(--biz-navy); }
+        .report-item { margin-bottom: 15px; padding: 10px; border-radius: 8px; background: #f9f9f9; }
+        .report-item h3 { color: var(--biz-orange); margin: 0 0 5px 0; border-bottom: 1px solid #ddd; }
+        .close-report { float: right; cursor: pointer; color: var(--biz-orange); font-weight: bold; }
     </style>
 </head>
 <body>
 
     <div class="header-row">
-        <h1>Biziverse Roadmap</h1>
+        <h1>Biziverse Project Map</h1>
         <button class="today-btn" onclick="showTodayTasks()">📅 Today's Tasks</button>
     </div>
     
@@ -71,49 +67,38 @@
 
     <div id="report-overlay">
         <div class="report-content">
-            <span class="close-report" onclick="closeReport()">CLOSE [X]</span>
-            <h2>Daily Task Assignment</h2>
+            <span class="close-report" onclick="closeReport()">[CLOSE]</span>
+            <h2>Founder Task List</h2>
             <div id="report-data"></div>
         </div>
     </div>
 
     <script>
         const founders = ["Founder 1", "Founder 2", "Founder 3"];
-        // Initial state
-        let allTasks = [
-            { cat: "A. Server", name: "File Upload", owner: "Founder 1" },
-            { cat: "B. Payment", name: "Yearly Pkg", owner: "Founder 2" },
-            { cat: "E. Legal", name: "GST JSON", owner: "Founder 3" }
-        ];
 
         const projectData = [
-            { cat: "A. Low Server Impact", short: "A", tasks: ["File upload", "Import Limits", "User limits"] },
-            { cat: "B. Payment Process", short: "B", tasks: ["Upgrade All", "Yearly Pkg", "Paid Badge"] },
-            { cat: "C. Self Start", short: "C", tasks: ["Flow check", "Mobile", "Gmail Int."] },
-            { cat: "D. Infection", short: "D", tasks: ["Doc Delivery", "Ads/Pixels", "Webstore"] },
-            { cat: "E. Legal Protection", short: "E", tasks: ["IT/DPDP", "GST JSON", "B2B Report"] }
+            { cat: "A. Low Server Impact", tasks: ["File upload", "Import Limits", "User limits"] },
+            { cat: "B. Payment Process", tasks: ["Upgrade @ Everywhere", "Yearly packages", "Videos for features", "Paid user badge"] },
+            { cat: "C. Self Start", tasks: ["Flow check", "Start anywhere", "Daily notifications", "Gmail Integration"] },
+            { cat: "D. Infection", tasks: ["Utility message", "Retargeting ads", "Branding @ Docs", "Newsfeed"] },
+            { cat: "E. Legal Protection", tasks: ["Terms (IT & DPDP)", "GST JSON", "B2B reporting", "Temp links"] }
         ];
 
         const grid = document.getElementById('main-grid');
 
-        function createBubble(taskName, category, assignedFounder = "Unassigned") {
+        function createBubble(taskName, category) {
             const bubble = document.createElement('div');
             bubble.className = 'task-bubble';
-            bubble.dataset.task = taskName;
-            bubble.dataset.cat = category;
-            bubble.innerHTML = `<span>${taskName}</span><div class="founder-tag">${assignedFounder}</div>`;
+            bubble.innerHTML = `<span>${taskName}</span><div class="founder-tag">Unassigned</div>`;
             
+            // Logic: Clicking bubble only changes the Assignee
             bubble.onclick = function() {
-                const action = confirm("Rename [OK] or Assign Founder [Cancel]?");
-                if (action) {
-                    const newName = prompt("New name:", taskName);
-                    if (newName) this.querySelector('span').innerText = newName;
-                } else {
-                    const fIndex = prompt("Assign to: 0: Founder 1, 1: Founder 2, 2: Founder 3");
-                    if (fIndex !== null && founders[fIndex]) {
-                        this.querySelector('.founder-tag').innerText = founders[fIndex];
-                    }
-                }
+                const choice = prompt("Assign to:\n1: Founder 1\n2: Founder 2\n3: Founder 3\n0: Reset to Unassigned");
+                
+                if (choice === "1") this.querySelector('.founder-tag').innerText = founders[0];
+                else if (choice === "2") this.querySelector('.founder-tag').innerText = founders[1];
+                else if (choice === "3") this.querySelector('.founder-tag').innerText = founders[2];
+                else if (choice === "0") this.querySelector('.founder-tag').innerText = "Unassigned";
             };
             return bubble;
         }
@@ -122,6 +107,7 @@
             const card = document.createElement('div');
             card.className = 'category-card';
             card.innerHTML = `<div class="category-title">${section.cat}</div>`;
+            
             const area = document.createElement('div');
             area.className = 'bubble-area';
 
@@ -129,12 +115,6 @@
                 area.appendChild(createBubble(taskName, section.cat));
             });
 
-            const addBtn = document.createElement('div');
-            addBtn.className = 'task-bubble add-btn';
-            addBtn.innerText = '+';
-            addBtn.onclick = () => area.insertBefore(createBubble(prompt("Task name:"), section.cat), addBtn);
-
-            area.appendChild(addBtn);
             card.appendChild(area);
             grid.appendChild(card);
         });
@@ -142,28 +122,25 @@
         function showTodayTasks() {
             const reportData = document.getElementById('report-data');
             reportData.innerHTML = "";
-            const bubbles = document.querySelectorAll('.task-bubble:not(.add-btn)');
+            const bubbles = document.querySelectorAll('.task-bubble');
             
-            // Grouping tasks by founder
-            let assignmentMap = {};
-            founders.forEach(f => assignmentMap[f] = []);
-            assignmentMap["Unassigned"] = [];
+            let map = { "Founder 1": [], "Founder 2": [], "Founder 3": [], "Unassigned": [] };
 
             bubbles.forEach(b => {
                 const name = b.querySelector('span').innerText;
                 const founder = b.querySelector('.founder-tag').innerText;
-                const cat = b.closest('.category-card').querySelector('.category-title').innerText;
-                assignmentMap[founder].push(`${name} (${cat})`);
+                map[founder].push(name);
             });
 
-            for (let founder in assignmentMap) {
-                if(assignmentMap[founder].length > 0) {
+            founders.forEach(f => {
+                if(map[f].length > 0) {
                     const div = document.createElement('div');
                     div.className = 'report-item';
-                    div.innerHTML = `<h3>${founder}</h3><ul>${assignmentMap[founder].map(t => `<li>${t}</li>`).join('')}</ul>`;
+                    div.innerHTML = `<h3>${f}</h3>${map[f].join(', ')}`;
                     reportData.appendChild(div);
                 }
-            }
+            });
+
             document.getElementById('report-overlay').style.display = 'flex';
         }
 
