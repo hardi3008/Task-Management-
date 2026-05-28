@@ -4,14 +4,13 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Project Bubble Workspace</title>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/7.8.5/d3.min.js"></script>
+    <script src="https://d3js.org/d3.v7.min.js"></script>
     <style>
-        body { font-family: 'Inter', sans-serif; background: #1a1a1a; color: white; margin: 0; overflow: hidden; }
-        #header { position: absolute; top: 20px; left: 20px; z-index: 10; pointer-events: none; }
-        .node circle { stroke: #fff; stroke-width: 1.5px; cursor: grab; }
-        .node text { pointer-events: none; text-anchor: middle; font-size: 11px; fill: white; font-weight: 500; }
-        .node circle:active { cursor: grabbing; }
-        .legend { position: absolute; bottom: 20px; right: 20px; background: rgba(255,255,255,0.1); padding: 10px; border-radius: 8px; font-size: 12px; }
+        body { font-family: sans-serif; background: #1a1a1a; color: white; margin: 0; padding: 0; overflow: hidden; }
+        #header { position: absolute; top: 20px; left: 20px; z-index: 100; pointer-events: none; }
+        svg { width: 100vw; height: 100vh; background: #1a1a1a; display: block; }
+        .node circle { stroke: #fff; stroke-width: 2px; cursor: grab; }
+        .node text { pointer-events: none; text-anchor: middle; font-size: 12px; fill: white; font-weight: bold; }
     </style>
 </head>
 <body>
@@ -24,70 +23,64 @@
     <svg id="canvas"></svg>
 
     <script>
-        const width = window.innerWidth;
-        const height = window.innerHeight;
+        // Ensure script runs after page load
+        window.onload = function() {
+            const width = window.innerWidth;
+            const height = window.innerHeight;
 
-        // Your specific project data organized by Category
-        const data = [
-            { cat: "A. Server", name: "File Upload" }, { cat: "A. Server", name: "Import Limits" }, { cat: "A. Server", name: "User Limits" },
-            { cat: "B. Payment", name: "Upgrades" }, { cat: "B. Payment", name: "Yearly Pkg" }, { cat: "B. Payment", name: "Videos" }, { cat: "B. Payment", name: "Paid Badge" },
-            { cat: "C. Support", name: "Flow Check" }, { cat: "C. Support", name: "Mobile Start" }, { cat: "C. Support", name: "Notifications" }, { cat: "C. Support", name: "Gmail Int." },
-            { cat: "D. Infection", name: "Doc Delivery" }, { cat: "D. Infection", name: "Retargeting" }, { cat: "D. Infection", name: "Branding" }, { cat: "D. Infection", name: "Newsfeed" },
-            { cat: "E. Legal", name: "Terms" }, { cat: "E. Legal", name: "GST JSON" }, { cat: "E. Legal", name: "B2B Report" },
-            { cat: "F. Fundraise", name: "Strategy" }, { cat: "F. Fundraise", name: "Meetings" },
-            { cat: "G. Go-Live", name: "Free Pkg" }, { cat: "G. Go-Live", name: "Org Design" }, { cat: "G. Go-Live", name: "Trust Content" }
-        ];
+            const data = [
+                { cat: "A", name: "File Upload" }, { cat: "A", name: "Import Limits" }, { cat: "A", name: "User Limits" },
+                { cat: "B", name: "Upgrades" }, { cat: "B", name: "Yearly Pkg" }, { cat: "B", name: "Videos" },
+                { cat: "C", name: "Flow Check" }, { cat: "C", name: "Mobile Start" }, { cat: "C", name: "Gmail Int." },
+                { cat: "D", name: "Doc Delivery" }, { cat: "D", name: "Retargeting" }, { cat: "D", name: "Newsfeed" },
+                { cat: "E", name: "Terms" }, { cat: "E", name: "GST JSON" }, { cat: "E", name: "B2B Report" },
+                { cat: "F", name: "Strategy" }, { cat: "F", name: "Meetings" },
+                { cat: "G", name: "Free Pkg" }, { cat: "G", name: "Org Design" }
+            ];
 
-        const categories = [...new Set(data.map(d => d.cat))];
-        const color = d3.scaleOrdinal().domain(categories).range(d3.schemeBright);
+            const color = d3.scaleOrdinal(d3.schemeCategory10);
 
-        const nodes = data.map((d, i) => ({
-            ...d,
-            radius: 50,
-            x: Math.random() * width,
-            y: Math.random() * height
-        }));
+            const nodes = data.map(d => ({
+                ...d,
+                radius: 50,
+                x: Math.random() * width,
+                y: Math.random() * height
+            }));
 
-        const svg = d3.select("#canvas")
-            .attr("width", width)
-            .attr("height", height);
+            const svg = d3.select("#canvas");
 
-        const simulation = d3.forceSimulation(nodes)
-            .force("center", d3.forceCenter(width / 2, height / 2))
-            .force("charge", d3.forceManyBody().strength(-50))
-            .force("collide", d3.forceCollide().radius(55))
-            .force("x", d3.forceX(d => (categories.indexOf(d.cat) % 4) * (width / 4) + 100).strength(0.1))
-            .force("y", d3.forceY(d => Math.floor(categories.indexOf(d.cat) / 4) * (height / 2) + 100).strength(0.1))
-            .on("tick", () => {
+            const simulation = d3.forceSimulation(nodes)
+                .force("charge", d3.forceManyBody().strength(-100))
+                .force("center", d3.forceCenter(width / 2, height / 2))
+                .force("collide", d3.forceCollide().radius(55))
+                .on("tick", ticked);
+
+            const node = svg.selectAll(".node")
+                .data(nodes)
+                .enter().append("g")
+                .attr("class", "node")
+                .call(d3.drag()
+                    .on("start", (e, d) => { if (!e.active) simulation.alphaTarget(0.3).restart(); d.fx = d.x; d.fy = d.y; })
+                    .on("drag", (e, d) => { d.fx = e.x; d.fy = e.y; })
+                    .on("end", (e, d) => { if (!e.active) simulation.alphaTarget(0); d.fx = null; d.fy = null; }));
+
+            node.append("circle")
+                .attr("r", 50)
+                .style("fill", d => color(d.cat));
+
+            node.append("text")
+                .text(d => d.name)
+                .attr("dy", ".3em");
+
+            function ticked() {
                 node.attr("transform", d => `translate(${d.x},${d.y})`);
-            });
-
-        const node = svg.selectAll(".node")
-            .data(nodes)
-            .enter().append("g")
-            .attr("class", "node")
-            .call(d3.drag()
-                .on("start", (e, d) => { if (!e.active) simulation.alphaTarget(0.3).restart(); d.fx = d.x; d.fy = d.y; })
-                .on("drag", (e, d) => { d.fx = e.x; d.fy = e.y; })
-                .on("end", (e, d) => { if (!e.active) simulation.alphaTarget(0); d.fx = null; d.fy = null; }));
-
-        node.append("circle")
-            .attr("r", d => d.radius)
-            .style("fill", d => color(d.cat))
-            .style("opacity", 0.9);
-
-        node.append("text")
-            .text(d => d.name)
-            .attr("dy", ".3em");
-
-        // Click to Rename
-        node.on("click", function(event, d) {
-            const newName = prompt("Edit Task Name:", d.name);
-            if (newName) {
-                d.name = newName;
-                d3.select(this).select("text").text(newName);
             }
-        });
+
+            node.on("click", function(event, d) {
+                const n = prompt("Rename:", d.name);
+                if (n) { d.name = n; d3.select(this).select("text").text(n); }
+            });
+        };
     </script>
 </body>
 </html>
