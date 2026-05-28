@@ -3,136 +3,104 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Interactive Project Map</title>
+    <title>Project Bubble Workspace</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/7.8.5/d3.min.js"></script>
     <style>
-        body { font-family: 'Segoe UI', system-ui, sans-serif; background: #fafafa; margin: 0; overflow: hidden; }
-        h1 { position: absolute; top: 20px; left: 20px; color: #333; margin: 0; pointer-events: none; z-index: 10; }
+        body { font-family: 'Inter', sans-serif; background: #121212; color: white; margin: 0; overflow: hidden; }
         #canvas { width: 100vw; height: 100vh; }
-        .node circle { fill: #1a73e8; stroke: #fff; stroke-width: 2px; cursor: grab; transition: fill 0.2s; }
-        .node circle:hover { fill: #1557b0; }
-        .node circle.active { cursor: grabbing; stroke: #000; }
-        .node text { pointer-events: none; text-anchor: middle; font-size: 14px; fill: white; font-weight: 500; }
-        #edit-popup { position: absolute; background: white; padding: 15px; border-radius: 8px; box-shadow: 0 4px 20px rgba(0,0,0,0.2); display: none; z-index: 100; }
-        #edit-input { border: 1px solid #ccc; padding: 8px; border-radius: 4px; font-size: 14px; width: 200px; }
+        .node circle { cursor: grab; stroke-width: 2px; }
+        .node text { pointer-events: none; text-anchor: middle; font-size: 11px; fill: white; font-weight: 400; }
+        .parent circle { fill: #1a73e8; stroke: #4285f4; }
+        .parent text { font-weight: bold; font-size: 14px; }
+        .child circle { fill: #333; stroke: #555; }
+        #edit-box { position: absolute; display: none; background: #222; padding: 10px; border-radius: 5px; border: 1px solid #444; z-index: 100; }
+        input { background: #333; color: white; border: 1px solid #555; padding: 5px; outline: none; }
+        .instruction { position: absolute; bottom: 20px; left: 20px; color: #888; font-size: 12px; }
     </style>
 </head>
 <body>
 
-    <h1>Interactive Project Map</h1>
+    <div id="edit-box"><input type="text" id="edit-input"></div>
+    <div class="instruction">Drag to move • Click to edit name</div>
     <div id="canvas"></div>
 
-    <div id="edit-popup">
-        <input type="text" id="edit-input">
-    </div>
-
     <script>
-        const width = window.innerWidth;
-        const height = window.innerHeight;
-        const baseRadius = 60;
+        const width = window.innerWidth, height = window.innerHeight;
 
-        // 1. Initial Data (Categories A-G)
-        let nodes = [
-            { id: 1, name: 'A. Low Server Impact', x: width * 0.2, y: height * 0.3 },
-            { id: 2, name: 'B. Payment Process', x: width * 0.5, y: height * 0.3 },
-            { id: 3, name: 'C. Self Start', x: width * 0.8, y: height * 0.3 },
-            { id: 4, name: 'D. Infection', x: width * 0.2, y: height * 0.7 },
-            { id: 5, name: 'F. Fundraise', x: width * 0.4, y: height * 0.7 },
-            { id: 6, name: 'G. Go-Live', x: width * 0.6, y: height * 0.7 },
-            { id: 7, name: 'E. Legal Protection', x: width * 0.8, y: height * 0.7 }
-        ];
+        // Structured Data from your project details
+        const data = {
+            name: "Project",
+            children: [
+                { name: "A. Low Server Impact", children: [{name: "File Upload"}, {name: "Import Limits"}, {name: "User Limits"}] },
+                { name: "B. Payment Process", children: [{name: "Yearly Packages"}, {name: "Upgrades"}, {name: "Paid Badge"}] },
+                { name: "C. Self Start", children: [{name: "Flow Check"}, {name: "Mobile Start"}, {name: "Gmail Int."}, {name: "Webinar"}] },
+                { name: "D. Infection", children: [{name: "Doc Delivery"}, {name: "Retargeting"}, {name: "Newsfeed"}, {name: "Webstore"}] },
+                { name: "F. Fundraise", children: [{name: "Strategy"}, {name: "Meeting AAP/AU"}] },
+                { name: "G. Go-Live", children: [{name: "Free Pkg"}, {name: "Org Design"}, {name: "Teaser 2.5L"}] },
+                { name: "E. Legal Protection", children: [{name: "Terms (DPDP)"}, {name: "GST JSON"}, {name: "B2B Report"}] }
+            ]
+        };
 
-        const svg = d3.select("#canvas").append("svg")
-            .attr("width", width)
-            .attr("height", height);
+        // Flatten data for the simulation
+        const nodes = [];
+        const links = [];
+        data.children.forEach((cat, i) => {
+            nodes.push({ id: cat.name, group: 'parent', radius: 60 });
+            cat.children.forEach(sub => {
+                nodes.push({ id: sub.name, group: 'child', radius: 40 });
+                links.push({ source: cat.name, target: sub.name });
+            });
+        });
 
-        // 2. Simulation Setup (Movable Physics)
+        const svg = d3.select("#canvas").append("svg").attr("width", width).attr("height", height);
+
         const simulation = d3.forceSimulation(nodes)
-            .force("charge", d3.forceManyBody().strength(-1000))
-            .force("center", d3.forceCenter(width / 2, height / 2).strength(0.05))
-            .force("collision", d3.forceCollide().radius(baseRadius + 5))
+            .force("link", d3.forceLink(links).id(d => d.id).distance(80))
+            .force("charge", d3.forceManyBody().strength(-300))
+            .force("center", d3.forceCenter(width / 2, height / 2))
+            .force("collision", d3.forceCollide().radius(d => d.radius + 5))
             .on("tick", ticked);
 
-        let nodeGroup = svg.append("g").attr("class", "nodes");
+        const node = svg.append("g")
+            .selectAll("g")
+            .data(nodes)
+            .join("g")
+            .attr("class", d => `node ${d.group}`)
+            .call(d3.drag().on("start", dragstarted).on("drag", dragged).on("end", dragended))
+            .on("click", (event, d) => editNode(event, d));
 
-        let node;
+        node.append("circle").attr("r", d => d.radius);
+        node.append("text").text(d => d.id).attr("dy", 4);
 
-        // 3. Render Function
-        function render() {
-            node = nodeGroup.selectAll(".node")
-                .data(nodes, d => d.id)
-                .join(
-                    enter => {
-                        const g = enter.append("g").attr("class", "node");
-                        g.append("circle")
-                            .attr("r", baseRadius)
-                            .call(d3.drag()
-                                .on("start", dragstarted)
-                                .on("drag", dragged)
-                                .on("end", dragended))
-                            .on("click", (event, d) => showEditPopup(event, d)); // Editable
-
-                        g.append("text").attr("dy", 5);
-                        return g;
-                    }
-                );
-
-            node.select("text").text(d => d.name);
-            simulation.nodes(nodes).alpha(1).restart();
-        }
-
-        // 4. Tick Function (Updates positions)
         function ticked() {
             node.attr("transform", d => `translate(${d.x},${d.y})`);
         }
 
-        // 5. Dragging Interactivity
         function dragstarted(event, d) {
             if (!event.active) simulation.alphaTarget(0.3).restart();
             d.fx = d.x; d.fy = d.y;
-            d3.select(this).classed("active", true);
         }
-
         function dragged(event, d) { d.fx = event.x; d.fy = event.y; }
-
         function dragended(event, d) {
             if (!event.active) simulation.alphaTarget(0);
-            d.fx = null; d.fy = null; // Let simulation resume control after drop
-            d3.select(this).classed("active", false);
+            d.fx = null; d.fy = null;
         }
 
-        // 6. Editing Interactivity
-        const popup = document.getElementById('edit-popup');
-        const input = document.getElementById('edit-input');
-        let activeNode = null;
-
-        function showEditPopup(event, d) {
-            activeNode = d;
-            popup.style.display = 'block';
-            popup.style.left = (event.pageX + 10) + 'px';
-            popup.style.top = (event.pageY + 10) + 'px';
-            input.value = d.name;
-            input.focus();
-            input.select();
+        function editNode(event, d) {
+            const box = document.getElementById('edit-box');
+            const input = document.getElementById('edit-input');
+            box.style.display = 'block';
+            box.style.left = event.pageX + 'px';
+            box.style.top = event.pageY + 'px';
+            input.value = d.id;
+            input.onkeydown = (e) => {
+                if (e.key === 'Enter') {
+                    d.id = input.value;
+                    node.select("text").text(n => n.id);
+                    box.style.display = 'none';
+                }
+            };
         }
-
-        input.addEventListener('keydown', (e) => {
-            if (e.key === 'Enter') {
-                activeNode.name = input.value;
-                popup.style.display = 'none';
-                render(); // Re-render to update text
-            }
-            if (e.key === 'Escape') { popup.style.display = 'none'; }
-        });
-
-        // Close popup if clicking canvas
-        svg.on("click", (event) => {
-            if (event.target.tagName === 'svg') { popup.style.display = 'none'; }
-        });
-
-        // Initial Render
-        render();
-
     </script>
 </body>
 </html>
