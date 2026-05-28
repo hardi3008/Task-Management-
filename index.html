@@ -3,189 +3,164 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Biziverse Founder Workspace</title>
+    <title>Biziverse Project Master</title>
     <style>
         :root {
             --biz-navy: #0d2144;
-            --biz-orange: #ff6d00; /* Vibrant Action Orange */
+            --biz-orange: #ff6d00;
             --biz-blue: #1e88e5;
-            --bg-grad: linear-gradient(135deg, #f4f7fa 0%, #e9eef5 100%);
+            --bg: #f4f7fa;
         }
 
-        body { 
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
-            background: var(--bg-grad); 
-            margin: 0; 
-            padding: 20px;
-            min-height: 100vh;
-        }
+        body { font-family: 'Segoe UI', sans-serif; background: var(--bg); color: var(--biz-navy); margin: 0; padding: 20px; }
+        
+        h1 { border-left: 8px solid var(--biz-orange); padding-left: 15px; margin-bottom: 30px; text-transform: uppercase; }
 
-        h1 { color: var(--biz-navy); text-align: center; text-transform: uppercase; letter-spacing: 2px; }
-
-        /* The 3-Column Layout */
-        .founder-grid {
+        .grid-container {
             display: grid;
-            grid-template-columns: repeat(3, 1fr);
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
             gap: 25px;
-            margin-top: 30px;
-            align-items: start;
         }
 
-        .column {
-            background: rgba(255, 255, 255, 0.6);
-            backdrop-filter: blur(10px);
-            border-radius: 15px;
-            border: 1px solid rgba(255,255,255,0.3);
+        .category-card {
+            background: white;
+            border-radius: 12px;
             padding: 20px;
-            min-height: 80vh;
-            box-shadow: 0 8px 32px rgba(13, 33, 68, 0.05);
-            display: flex;
-            flex-direction: column;
-            align-items: center;
+            box-shadow: 0 4px 15px rgba(13, 33, 68, 0.1);
+            border-top: 4px solid var(--biz-navy);
         }
 
-        .founder-name {
-            font-size: 1.5rem;
+        .category-title {
+            font-size: 1.2rem;
             font-weight: 800;
-            color: var(--biz-navy);
             margin-bottom: 20px;
+            color: var(--biz-navy);
+            border-bottom: 1px solid #ddd;
             padding-bottom: 10px;
-            border-bottom: 4px solid var(--biz-orange);
-            width: 100%;
-            text-align: center;
         }
 
-        .bubble-container {
+        .bubble-area {
             display: flex;
             flex-wrap: wrap;
             gap: 15px;
-            justify-content: center;
         }
 
-        /* Creative Bubble Styling */
         .task-bubble {
-            width: 95px;
-            height: 95px;
-            background: var(--biz-white);
-            border: 2px solid var(--biz-navy);
+            background: white;
+            border: 2px solid var(--biz-blue);
             border-radius: 50%;
+            width: 100px;
+            height: 100px;
             display: flex;
+            flex-direction: column;
             align-items: center;
             justify-content: center;
             text-align: center;
             font-size: 11px;
             font-weight: 600;
-            padding: 10px;
             cursor: pointer;
-            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+            transition: 0.3s;
             position: relative;
-            background: white;
-            color: var(--biz-navy);
         }
 
         .task-bubble:hover {
-            transform: scale(1.1) rotate(5deg);
             border-color: var(--biz-orange);
-            box-shadow: 0 10px 20px rgba(255, 109, 0, 0.2);
+            transform: translateY(-5px);
         }
 
-        .task-tag {
+        /* Founder Assignment Tag */
+        .founder-tag {
             position: absolute;
-            top: -5px;
-            background: var(--biz-blue);
+            bottom: -5px;
+            background: var(--biz-navy);
             color: white;
-            padding: 2px 6px;
+            padding: 2px 8px;
             border-radius: 10px;
-            font-size: 8px;
+            font-size: 9px;
+            border: 1px solid var(--biz-orange);
         }
 
         .add-btn {
-            background: var(--biz-orange);
-            color: white;
-            border: none;
+            border: 2px dashed var(--biz-orange);
+            color: var(--biz-orange);
             font-size: 30px;
-            box-shadow: 0 4px 15px rgba(255, 109, 0, 0.3);
         }
 
-        .add-btn:hover {
-            background: var(--biz-navy);
-            transform: scale(1.1);
-        }
+        .add-btn:hover { background: #fff3e0; }
     </style>
 </head>
 <body>
 
-    <h1>Biziverse Strategic Roadmap</h1>
+    <h1>Biziverse Roadmap & Assignment</h1>
     
-    <div class="founder-grid">
-        <div class="column" id="founder-1">
-            <div class="founder-name">Co-Founder 1</div>
-            <div class="bubble-container"></div>
-        </div>
-
-        <div class="column" id="founder-2">
-            <div class="founder-name">Co-Founder 2</div>
-            <div class="bubble-container"></div>
-        </div>
-
-        <div class="column" id="founder-3">
-            <div class="founder-name">Co-Founder 3</div>
-            <div class="bubble-container"></div>
-        </div>
-    </div>
+    <div class="grid-container" id="main-grid"></div>
 
     <script>
-        // Initial Data with assignments
-        const initialTasks = [
-            { name: "IT/DPDP Terms", cat: "Legal", owner: "founder-1" },
-            { name: "GST JSON", cat: "Legal", owner: "founder-1" },
-            { name: "Fundraise Strategy", cat: "Finance", owner: "founder-2" },
-            { cat: "Payment", name: "Yearly Pkg", owner: "founder-2" },
-            { cat: "Server", name: "File Upload", owner: "founder-3" },
-            { cat: "Server", name: "User Limits", owner: "founder-3" }
+        // Founders list
+        const founders = ["Founder 1", "Founder 2", "Founder 3"];
+
+        const projectData = [
+            { cat: "A. Low Server Impact", tasks: ["File upload", "Import Limits", "User limits"] },
+            { cat: "B. Payment Process", tasks: ["Upgrade All", "Yearly Pkg", "Paid Badge"] },
+            { cat: "C. Self Start", tasks: ["Flow check", "Mobile", "Gmail Int."] },
+            { cat: "D. Infection", tasks: ["Doc Delivery", "Ads/Pixels", "Webstore"] },
+            { cat: "E. Legal Protection", tasks: ["IT/DPDP", "GST JSON", "B2B Report"] }
         ];
 
-        function createBubble(task) {
-            const b = document.createElement('div');
-            b.className = 'task-bubble';
-            b.innerHTML = `<div class="task-tag">${task.cat}</div><span>${task.name}</span>`;
+        const grid = document.getElementById('main-grid');
+
+        function createBubble(taskName, assignedFounder = "Unassigned") {
+            const bubble = document.createElement('div');
+            bubble.className = 'task-bubble';
+            bubble.innerHTML = `<span>${taskName}</span><div class="founder-tag">${assignedFounder}</div>`;
             
-            b.onclick = function() {
-                const n = prompt("Edit Task Name:", task.name);
-                if(n) { task.name = n; this.querySelector('span').innerText = n; }
-            };
-            return b;
-        }
-
-        function setupColumn(id) {
-            const col = document.getElementById(id);
-            const container = col.querySelector('.bubble-container');
-
-            // Add initial tasks for this founder
-            initialTasks.filter(t => t.owner === id).forEach(t => {
-                container.appendChild(createBubble(t));
-            });
-
-            // Add "+" button
-            const btn = document.createElement('div');
-            btn.className = 'task-bubble add-btn';
-            btn.innerText = '+';
-            btn.onclick = () => {
-                const name = prompt("New Task Name:");
-                const cat = prompt("Category (A, B, C etc.):", "General");
-                if(name) {
-                    const newT = { name, cat, owner: id };
-                    container.insertBefore(createBubble(newT), btn);
+            bubble.onclick = function() {
+                const action = confirm("Click OK to Rename, Cancel to Change Assignee");
+                if (action) {
+                    const newName = prompt("New task name:", taskName);
+                    if (newName) this.querySelector('span').innerText = newName;
+                } else {
+                    const fIndex = prompt("Assign to: 0: Founder 1, 1: Founder 2, 2: Founder 3");
+                    if (fIndex !== null && founders[fIndex]) {
+                        this.querySelector('.founder-tag').innerText = founders[fIndex];
+                    }
                 }
             };
-            container.appendChild(btn);
+            return bubble;
         }
 
-        // Initialize all columns
-        setupColumn('founder-1');
-        setupColumn('founder-2');
-        setupColumn('founder-3');
+        projectData.forEach(section => {
+            const card = document.createElement('div');
+            card.className = 'category-card';
+
+            const title = document.createElement('div');
+            title.className = 'category-title';
+            title.innerText = section.cat;
+            card.appendChild(title);
+
+            const area = document.createElement('div');
+            area.className = 'bubble-area';
+
+            section.tasks.forEach(taskName => {
+                area.appendChild(createBubble(taskName));
+            });
+
+            // Add task button
+            const addBtn = document.createElement('div');
+            addBtn.className = 'task-bubble add-btn';
+            addBtn.innerText = '+';
+
+            addBtn.onclick = function() {
+                const newTask = prompt("Enter new task name:");
+                if (newTask) {
+                    area.insertBefore(createBubble(newTask), addBtn);
+                }
+            };
+
+            area.appendChild(addBtn);
+            card.appendChild(area);
+            grid.appendChild(card);
+        });
     </script>
 </body>
 </html>
