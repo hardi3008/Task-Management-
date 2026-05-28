@@ -3,192 +3,189 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Biziverse Project Dashboard</title>
+    <title>Biziverse Founder Workspace</title>
     <style>
-        /* Biziverse Inspired Color Palette */
         :root {
-            --biz-navy: #0d2144;      /* Deep Navy */
-            --biz-blue: #1e88e5;      /* Primary Bright Blue */
-            --biz-light-bg: #f4f7fa;  /* Light Background */
-            --biz-white: #ffffff;
-            --biz-gray: #607d8b;
+            --biz-navy: #0d2144;
+            --biz-orange: #ff6d00; /* Vibrant Action Orange */
+            --biz-blue: #1e88e5;
+            --bg-grad: linear-gradient(135deg, #f4f7fa 0%, #e9eef5 100%);
         }
 
         body { 
-            font-family: 'Segoe UI', Roboto, sans-serif; 
-            background: var(--biz-light-bg); 
-            color: var(--biz-navy); 
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
+            background: var(--bg-grad); 
             margin: 0; 
-            padding: 20px; 
-        }
-        
-        header {
-            display: flex;
-            align-items: center;
-            margin-bottom: 30px;
-            border-bottom: 3px solid var(--biz-blue);
-            padding-bottom: 10px;
-        }
-
-        h1 { 
-            margin: 0; 
-            font-size: 24px; 
-            color: var(--biz-navy);
-            text-transform: uppercase;
-            letter-spacing: 1px;
-        }
-
-        .grid-container {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
-            gap: 25px;
-            max-width: 1400px;
-            margin: 0 auto;
-        }
-
-        .category-card {
-            background: var(--biz-white);
-            border-radius: 8px;
             padding: 20px;
-            box-shadow: 0 4px 12px rgba(13, 33, 68, 0.08);
-            border-top: 5px solid var(--biz-navy);
-            transition: transform 0.2s;
+            min-height: 100vh;
         }
 
-        .category-card:hover {
-            transform: translateY(-5px);
+        h1 { color: var(--biz-navy); text-align: center; text-transform: uppercase; letter-spacing: 2px; }
+
+        /* The 3-Column Layout */
+        .founder-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 25px;
+            margin-top: 30px;
+            align-items: start;
         }
 
-        .category-title {
-            font-size: 1.1rem;
-            font-weight: 700;
-            margin-bottom: 20px;
-            color: var(--biz-navy);
+        .column {
+            background: rgba(255, 255, 255, 0.6);
+            backdrop-filter: blur(10px);
+            border-radius: 15px;
+            border: 1px solid rgba(255,255,255,0.3);
+            padding: 20px;
+            min-height: 80vh;
+            box-shadow: 0 8px 32px rgba(13, 33, 68, 0.05);
             display: flex;
-            justify-content: space-between;
+            flex-direction: column;
+            align-items: center;
         }
 
-        .bubble-area {
+        .founder-name {
+            font-size: 1.5rem;
+            font-weight: 800;
+            color: var(--biz-navy);
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 4px solid var(--biz-orange);
+            width: 100%;
+            text-align: center;
+        }
+
+        .bubble-container {
             display: flex;
             flex-wrap: wrap;
-            gap: 12px;
-            justify-content: flex-start;
+            gap: 15px;
+            justify-content: center;
         }
 
-        /* Bubble Styling */
+        /* Creative Bubble Styling */
         .task-bubble {
+            width: 95px;
+            height: 95px;
             background: var(--biz-white);
-            border: 2px solid var(--biz-blue);
-            color: var(--biz-navy);
+            border: 2px solid var(--biz-navy);
             border-radius: 50%;
-            width: 85px;
-            height: 85px;
             display: flex;
             align-items: center;
             justify-content: center;
             text-align: center;
             font-size: 11px;
             font-weight: 600;
-            padding: 8px;
+            padding: 10px;
             cursor: pointer;
-            transition: all 0.3s ease;
-            box-shadow: 0 2px 5px rgba(30, 136, 229, 0.2);
-            line-height: 1.2;
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+            position: relative;
+            background: white;
+            color: var(--biz-navy);
         }
 
         .task-bubble:hover {
-            background: var(--biz-blue);
-            color: white;
-            box-shadow: 0 5px 15px rgba(30, 136, 229, 0.4);
-            transform: scale(1.05);
+            transform: scale(1.1) rotate(5deg);
+            border-color: var(--biz-orange);
+            box-shadow: 0 10px 20px rgba(255, 109, 0, 0.2);
         }
 
-        /* Add Button Specific Style */
+        .task-tag {
+            position: absolute;
+            top: -5px;
+            background: var(--biz-blue);
+            color: white;
+            padding: 2px 6px;
+            border-radius: 10px;
+            font-size: 8px;
+        }
+
         .add-btn {
-            background: #e3f2fd;
-            border: 2px dashed var(--biz-blue);
-            color: var(--biz-blue);
-            font-size: 28px;
+            background: var(--biz-orange);
+            color: white;
+            border: none;
+            font-size: 30px;
+            box-shadow: 0 4px 15px rgba(255, 109, 0, 0.3);
         }
 
         .add-btn:hover {
-            background: var(--biz-blue);
-            color: white;
-            border-style: solid;
-        }
-
-        .task-bubble span {
-            word-wrap: break-word;
-            pointer-events: none;
+            background: var(--biz-navy);
+            transform: scale(1.1);
         }
     </style>
 </head>
 <body>
 
-    <header>
-        <h1>Biziverse Project Tracker</h1>
-    </header>
+    <h1>Biziverse Strategic Roadmap</h1>
     
-    <div class="grid-container" id="main-grid"></div>
+    <div class="founder-grid">
+        <div class="column" id="founder-1">
+            <div class="founder-name">Co-Founder 1</div>
+            <div class="bubble-container"></div>
+        </div>
+
+        <div class="column" id="founder-2">
+            <div class="founder-name">Co-Founder 2</div>
+            <div class="bubble-container"></div>
+        </div>
+
+        <div class="column" id="founder-3">
+            <div class="founder-name">Co-Founder 3</div>
+            <div class="bubble-container"></div>
+        </div>
+    </div>
 
     <script>
-        const projectData = [
-            { cat: "A. Low Server Impact", tasks: ["File upload", "Import Limits", "User limits"] },
-            { cat: "B. Payment Process", tasks: ["Upgrade All", "Yearly Pkg", "Videos", "Paid Badge"] },
-            { cat: "C. Self Start", tasks: ["Flow check", "Mobile", "Daily Notif", "Gmail Int."] },
-            { cat: "D. Infection", tasks: ["Doc Delivery", "Ads/Pixels", "Newsfeed", "Webstore"] },
-            { cat: "E. Legal Protection", tasks: ["IT/DPDP", "GST JSON", "B2B Report"] },
-            { cat: "F. Fundraise", tasks: ["Strategy", "Meetings"] },
-            { cat: "G. Go-Live", tasks: ["Free Pkg", "Org Design", "2.5L Teaser"] }
+        // Initial Data with assignments
+        const initialTasks = [
+            { name: "IT/DPDP Terms", cat: "Legal", owner: "founder-1" },
+            { name: "GST JSON", cat: "Legal", owner: "founder-1" },
+            { name: "Fundraise Strategy", cat: "Finance", owner: "founder-2" },
+            { cat: "Payment", name: "Yearly Pkg", owner: "founder-2" },
+            { cat: "Server", name: "File Upload", owner: "founder-3" },
+            { cat: "Server", name: "User Limits", owner: "founder-3" }
         ];
 
-        const grid = document.getElementById('main-grid');
-
-        function createBubble(taskName) {
-            const bubble = document.createElement('div');
-            bubble.className = 'task-bubble';
-            bubble.innerHTML = `<span>${taskName}</span>`;
+        function createBubble(task) {
+            const b = document.createElement('div');
+            b.className = 'task-bubble';
+            b.innerHTML = `<div class="task-tag">${task.cat}</div><span>${task.name}</span>`;
             
-            bubble.onclick = function() {
-                const currentName = this.querySelector('span').innerText;
-                const editName = prompt("Edit task name:", currentName);
-                if (editName) this.querySelector('span').innerText = editName;
+            b.onclick = function() {
+                const n = prompt("Edit Task Name:", task.name);
+                if(n) { task.name = n; this.querySelector('span').innerText = n; }
             };
-            return bubble;
+            return b;
         }
 
-        projectData.forEach(section => {
-            const card = document.createElement('div');
-            card.className = 'category-card';
+        function setupColumn(id) {
+            const col = document.getElementById(id);
+            const container = col.querySelector('.bubble-container');
 
-            const title = document.createElement('div');
-            title.className = 'category-title';
-            title.innerText = section.cat;
-            card.appendChild(title);
-
-            const area = document.createElement('div');
-            area.className = 'bubble-area';
-
-            section.tasks.forEach(taskName => {
-                area.appendChild(createBubble(taskName));
+            // Add initial tasks for this founder
+            initialTasks.filter(t => t.owner === id).forEach(t => {
+                container.appendChild(createBubble(t));
             });
 
-            const addBtn = document.createElement('div');
-            addBtn.className = 'task-bubble add-btn';
-            addBtn.innerText = '+';
-
-            addBtn.onclick = function() {
-                const newTask = prompt("Enter new task name:");
-                if (newTask) {
-                    const newBubble = createBubble(newTask);
-                    area.insertBefore(newBubble, addBtn);
+            // Add "+" button
+            const btn = document.createElement('div');
+            btn.className = 'task-bubble add-btn';
+            btn.innerText = '+';
+            btn.onclick = () => {
+                const name = prompt("New Task Name:");
+                const cat = prompt("Category (A, B, C etc.):", "General");
+                if(name) {
+                    const newT = { name, cat, owner: id };
+                    container.insertBefore(createBubble(newT), btn);
                 }
             };
+            container.appendChild(btn);
+        }
 
-            area.appendChild(addBtn);
-            card.appendChild(area);
-            grid.appendChild(card);
-        });
+        // Initialize all columns
+        setupColumn('founder-1');
+        setupColumn('founder-2');
+        setupColumn('founder-3');
     </script>
 </body>
 </html>
