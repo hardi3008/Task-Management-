@@ -3,90 +3,136 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Project Bubble Tracker</title>
+    <title>Interactive Project Map</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/7.8.5/d3.min.js"></script>
     <style>
-        body { font-family: sans-serif; background: #f4f7f6; display: flex; flex-direction: column; align-items: center; }
-        #chart { background: white; border-radius: 8px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); margin-top: 20px; }
-        .bubble { stroke-width: 2px; cursor: pointer; transition: opacity 0.2s; }
-        .bubble:hover { opacity: 0.8; }
-        .tooltip { position: absolute; padding: 10px; background: rgba(0,0,0,0.8); color: #fff; border-radius: 4px; pointer-events: none; font-size: 12px; }
-        h2 { color: #333; margin-top: 30px; }
+        body { font-family: 'Segoe UI', system-ui, sans-serif; background: #fafafa; margin: 0; overflow: hidden; }
+        h1 { position: absolute; top: 20px; left: 20px; color: #333; margin: 0; pointer-events: none; z-index: 10; }
+        #canvas { width: 100vw; height: 100vh; }
+        .node circle { fill: #1a73e8; stroke: #fff; stroke-width: 2px; cursor: grab; transition: fill 0.2s; }
+        .node circle:hover { fill: #1557b0; }
+        .node circle.active { cursor: grabbing; stroke: #000; }
+        .node text { pointer-events: none; text-anchor: middle; font-size: 14px; fill: white; font-weight: 500; }
+        #edit-popup { position: absolute; background: white; padding: 15px; border-radius: 8px; box-shadow: 0 4px 20px rgba(0,0,0,0.2); display: none; z-index: 100; }
+        #edit-input { border: 1px solid #ccc; padding: 8px; border-radius: 4px; font-size: 14px; width: 200px; }
     </style>
 </head>
 <body>
 
-    <h2>Project Task Map (Status Tracker)</h2>
-    <div id="chart"></div>
-    <div class="tooltip" style="opacity:0;"></div>
+    <h1>Interactive Project Map</h1>
+    <div id="canvas"></div>
+
+    <div id="edit-popup">
+        <input type="text" id="edit-input">
+    </div>
 
     <script>
-        // 1. PASTE YOUR PUBLISHED CSV URL HERE
-        const csvUrl = 'YOUR_GOOGLE_SHEET_CSV_URL_HERE';
+        const width = window.innerWidth;
+        const height = window.innerHeight;
+        const baseRadius = 60;
 
-        const margin = {top: 40, right: 150, bottom: 60, left: 60},
-              width = 900 - margin.left - margin.right,
-              height = 500 - margin.top - margin.bottom;
+        // 1. Initial Data (Categories A-G)
+        let nodes = [
+            { id: 1, name: 'A. Low Server Impact', x: width * 0.2, y: height * 0.3 },
+            { id: 2, name: 'B. Payment Process', x: width * 0.5, y: height * 0.3 },
+            { id: 3, name: 'C. Self Start', x: width * 0.8, y: height * 0.3 },
+            { id: 4, name: 'D. Infection', x: width * 0.2, y: height * 0.7 },
+            { id: 5, name: 'F. Fundraise', x: width * 0.4, y: height * 0.7 },
+            { id: 6, name: 'G. Go-Live', x: width * 0.6, y: height * 0.7 },
+            { id: 7, name: 'E. Legal Protection', x: width * 0.8, y: height * 0.7 }
+        ];
 
-        const svg = d3.select("#chart")
-            .append("svg")
-                .attr("width", width + margin.left + margin.right)
-                .attr("height", height + margin.top + margin.bottom)
-            .append("g")
-                .attr("transform", `translate(${margin.left},${margin.top})`);
+        const svg = d3.select("#canvas").append("svg")
+            .attr("width", width)
+            .attr("height", height);
 
-        d3.csv(csvUrl).then(data => {
-            
-            // Scales
-            const x = d3.scalePoint()
-                .domain([...new Set(data.map(d => d.Category))])
-                .range([0, width]).padding(0.5);
+        // 2. Simulation Setup (Movable Physics)
+        const simulation = d3.forceSimulation(nodes)
+            .force("charge", d3.forceManyBody().strength(-1000))
+            .force("center", d3.forceCenter(width / 2, height / 2).strength(0.05))
+            .force("collision", d3.forceCollide().radius(baseRadius + 5))
+            .on("tick", ticked);
 
-            const y = d3.scaleLinear()
-                .domain([0, 10]) // Complexity scale 1-10
-                .range([height, 0]);
+        let nodeGroup = svg.append("g").attr("class", "nodes");
 
-            const z = d3.scaleLinear()
-                .domain([0, 10]) // Impact scale (Size)
-                .range([5, 40]);
+        let node;
 
-            const myColor = d3.scaleOrdinal()
-                .domain(["Done", "Pending"])
-                .range(["#2ecc71", "#e74c3c"]); // Green and Red
+        // 3. Render Function
+        function render() {
+            node = nodeGroup.selectAll(".node")
+                .data(nodes, d => d.id)
+                .join(
+                    enter => {
+                        const g = enter.append("g").attr("class", "node");
+                        g.append("circle")
+                            .attr("r", baseRadius)
+                            .call(d3.drag()
+                                .on("start", dragstarted)
+                                .on("drag", dragged)
+                                .on("end", dragended))
+                            .on("click", (event, d) => showEditPopup(event, d)); // Editable
 
-            // Axes
-            svg.append("g")
-                .attr("transform", `translate(0, ${height})`)
-                .call(d3.axisBottom(x));
-            
-            svg.append("g").call(d3.axisLeft(y));
+                        g.append("text").attr("dy", 5);
+                        return g;
+                    }
+                );
 
-            // Labels
-            svg.append("text").attr("x", width/2).attr("y", height+40).text("Project Category").style("text-anchor", "middle");
-            svg.append("text").attr("transform", "rotate(-90)").attr("y", -40).attr("x", -height/2).text("Complexity").style("text-anchor", "middle");
+            node.select("text").text(d => d.name);
+            simulation.nodes(nodes).alpha(1).restart();
+        }
 
-            // Tooltip logic
-            const tooltip = d3.select(".tooltip");
+        // 4. Tick Function (Updates positions)
+        function ticked() {
+            node.attr("transform", d => `translate(${d.x},${d.y})`);
+        }
 
-            // Dots
-            svg.selectAll("dot")
-                .data(data)
-                .enter()
-                .append("circle")
-                    .attr("class", "bubble")
-                    .attr("cx", d => x(d.Category))
-                    .attr("cy", d => y(d.Complexity))
-                    .attr("r", d => z(d.Impact))
-                    .style("fill", d => myColor(d.Status))
-                    .style("stroke", "white")
-                    .on("mouseover", (event, d) => {
-                        tooltip.transition().duration(200).style("opacity", .9);
-                        tooltip.html(`Task: ${d.Task}<br>Owner: ${d.Owner}<br>Status: ${d.Status}`)
-                            .style("left", (event.pageX + 10) + "px")
-                            .style("top", (event.pageY - 28) + "px");
-                    })
-                    .on("mouseout", () => tooltip.transition().duration(500).style("opacity", 0));
+        // 5. Dragging Interactivity
+        function dragstarted(event, d) {
+            if (!event.active) simulation.alphaTarget(0.3).restart();
+            d.fx = d.x; d.fy = d.y;
+            d3.select(this).classed("active", true);
+        }
+
+        function dragged(event, d) { d.fx = event.x; d.fy = event.y; }
+
+        function dragended(event, d) {
+            if (!event.active) simulation.alphaTarget(0);
+            d.fx = null; d.fy = null; // Let simulation resume control after drop
+            d3.select(this).classed("active", false);
+        }
+
+        // 6. Editing Interactivity
+        const popup = document.getElementById('edit-popup');
+        const input = document.getElementById('edit-input');
+        let activeNode = null;
+
+        function showEditPopup(event, d) {
+            activeNode = d;
+            popup.style.display = 'block';
+            popup.style.left = (event.pageX + 10) + 'px';
+            popup.style.top = (event.pageY + 10) + 'px';
+            input.value = d.name;
+            input.focus();
+            input.select();
+        }
+
+        input.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter') {
+                activeNode.name = input.value;
+                popup.style.display = 'none';
+                render(); // Re-render to update text
+            }
+            if (e.key === 'Escape') { popup.style.display = 'none'; }
         });
+
+        // Close popup if clicking canvas
+        svg.on("click", (event) => {
+            if (event.target.tagName === 'svg') { popup.style.display = 'none'; }
+        });
+
+        // Initial Render
+        render();
+
     </script>
 </body>
 </html>
