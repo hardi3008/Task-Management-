@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Project Bubble Tracker</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/7.8.5/d3.min.js"></script>
+    <style>
+        body { font-family: sans-serif; background: #f4f7f6; display: flex; flex-direction: column; align-items: center; }
+        #chart { background: white; border-radius: 8px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); margin-top: 20px; }
+        .bubble { stroke-width: 2px; cursor: pointer; transition: opacity 0.2s; }
+        .bubble:hover { opacity: 0.8; }
+        .tooltip { position: absolute; padding: 10px; background: rgba(0,0,0,0.8); color: #fff; border-radius: 4px; pointer-events: none; font-size: 12px; }
+        h2 { color: #333; margin-top: 30px; }
+    </style>
+</head>
+<body>
+
+    <h2>Project Task Map (Status Tracker)</h2>
+    <div id="chart"></div>
+    <div class="tooltip" style="opacity:0;"></div>
+
+    <script>
+        // 1. PASTE YOUR PUBLISHED CSV URL HERE
+        const csvUrl = 'YOUR_GOOGLE_SHEET_CSV_URL_HERE';
+
+        const margin = {top: 40, right: 150, bottom: 60, left: 60},
+              width = 900 - margin.left - margin.right,
+              height = 500 - margin.top - margin.bottom;
+
+        const svg = d3.select("#chart")
+            .append("svg")
+                .attr("width", width + margin.left + margin.right)
+                .attr("height", height + margin.top + margin.bottom)
+            .append("g")
+                .attr("transform", `translate(${margin.left},${margin.top})`);
+
+        d3.csv(csvUrl).then(data => {
+            
+            // Scales
+            const x = d3.scalePoint()
+                .domain([...new Set(data.map(d => d.Category))])
+                .range([0, width]).padding(0.5);
+
+            const y = d3.scaleLinear()
+                .domain([0, 10]) // Complexity scale 1-10
+                .range([height, 0]);
+
+            const z = d3.scaleLinear()
+                .domain([0, 10]) // Impact scale (Size)
+                .range([5, 40]);
+
+            const myColor = d3.scaleOrdinal()
+                .domain(["Done", "Pending"])
+                .range(["#2ecc71", "#e74c3c"]); // Green and Red
+
+            // Axes
+            svg.append("g")
+                .attr("transform", `translate(0, ${height})`)
+                .call(d3.axisBottom(x));
+            
+            svg.append("g").call(d3.axisLeft(y));
+
+            // Labels
+            svg.append("text").attr("x", width/2).attr("y", height+40).text("Project Category").style("text-anchor", "middle");
+            svg.append("text").attr("transform", "rotate(-90)").attr("y", -40).attr("x", -height/2).text("Complexity").style("text-anchor", "middle");
+
+            // Tooltip logic
+            const tooltip = d3.select(".tooltip");
+
+            // Dots
+            svg.selectAll("dot")
+                .data(data)
+                .enter()
+                .append("circle")
+                    .attr("class", "bubble")
+                    .attr("cx", d => x(d.Category))
+                    .attr("cy", d => y(d.Complexity))
+                    .attr("r", d => z(d.Impact))
+                    .style("fill", d => myColor(d.Status))
+                    .style("stroke", "white")
+                    .on("mouseover", (event, d) => {
+                        tooltip.transition().duration(200).style("opacity", .9);
+                        tooltip.html(`Task: ${d.Task}<br>Owner: ${d.Owner}<br>Status: ${d.Status}`)
+                            .style("left", (event.pageX + 10) + "px")
+                            .style("top", (event.pageY - 28) + "px");
+                    })
+                    .on("mouseout", () => tooltip.transition().duration(500).style("opacity", 0));
+        });
+    </script>
+</body>
+</html>
