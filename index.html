@@ -3,84 +3,131 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Project Bubble Workspace</title>
-    <script src="https://d3js.org/d3.v7.min.js"></script>
+    <title>Project Task Dashboard</title>
     <style>
-        body { font-family: sans-serif; background: #1a1a1a; color: white; margin: 0; padding: 0; overflow: hidden; }
-        #header { position: absolute; top: 20px; left: 20px; z-index: 100; pointer-events: none; }
-        svg { width: 100vw; height: 100vh; background: #1a1a1a; display: block; }
-        .node circle { stroke: #fff; stroke-width: 2px; cursor: grab; }
-        .node text { pointer-events: none; text-anchor: middle; font-size: 12px; fill: white; font-weight: bold; }
+        :root { --bg: #121212; --card: #1e1e1e; --text: #e0e0e0; }
+        body { font-family: 'Segoe UI', sans-serif; background: var(--bg); color: var(--text); margin: 0; padding: 20px; }
+        
+        h1 { margin-bottom: 20px; color: #4285f4; }
+
+        /* Grid layout: 3 columns */
+        .grid-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .category-card {
+            background: var(--card);
+            border-radius: 12px;
+            padding: 15px;
+            border: 1px solid #333;
+            min-height: 250px;
+        }
+
+        .category-title {
+            font-size: 1.1rem;
+            font-weight: bold;
+            margin-bottom: 15px;
+            padding-bottom: 8px;
+            border-bottom: 2px solid #4285f4;
+            color: #fff;
+        }
+
+        .bubble-area {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            justify-content: center;
+        }
+
+        /* The "Bubbles" */
+        .task-bubble {
+            background: #2c2c2c;
+            border: 1px solid #444;
+            border-radius: 50%;
+            width: 80px;
+            height: 80px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            font-size: 11px;
+            padding: 5px;
+            cursor: pointer;
+            transition: all 0.2s;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.3);
+        }
+
+        .task-bubble:hover {
+            transform: scale(1.1);
+            background: #3d3d3d;
+            border-color: #4285f4;
+        }
+
+        .task-bubble span {
+            word-wrap: break-word;
+            pointer-events: none;
+        }
     </style>
 </head>
 <body>
 
-    <div id="header">
-        <h1>Project Overview</h1>
-        <p>Drag bubbles to organize • Click to rename</p>
-    </div>
-
-    <svg id="canvas"></svg>
+    <h1>Project Overview: A to G</h1>
+    
+    <div class="grid-container" id="main-grid">
+        </div>
 
     <script>
-        // Ensure script runs after page load
-        window.onload = function() {
-            const width = window.innerWidth;
-            const height = window.innerHeight;
+        const projectData = [
+            { cat: "A. Low Server Impact", tasks: ["File upload", "Import Limits", "User limits"] },
+            { cat: "B. Payment Process", tasks: ["Upgrade All", "Yearly Pkg", "Feature Videos", "Paid Badge"] },
+            { cat: "C. Self Start", tasks: ["Flow check", "Mobile Start", "Daily Notif", "Gmail Int.", "Webinar"] },
+            { cat: "D. Infection", tasks: ["Doc Delivery", "Ads/Pixels", "Newsfeed", "Webstore"] },
+            { cat: "E. Legal Protection", tasks: ["IT/DPDP Terms", "GST JSON", "B2B Report", "Temp Links"] },
+            { cat: "F. Fundraise", tasks: ["Strategy", "Meetings"] },
+            { cat: "G. Go-Live", tasks: ["Free Pkg", "Org Design", "2.5L Teaser", "Trust Content"] }
+        ];
 
-            const data = [
-                { cat: "A", name: "File Upload" }, { cat: "A", name: "Import Limits" }, { cat: "A", name: "User Limits" },
-                { cat: "B", name: "Upgrades" }, { cat: "B", name: "Yearly Pkg" }, { cat: "B", name: "Videos" },
-                { cat: "C", name: "Flow Check" }, { cat: "C", name: "Mobile Start" }, { cat: "C", name: "Gmail Int." },
-                { cat: "D", name: "Doc Delivery" }, { cat: "D", name: "Retargeting" }, { cat: "D", name: "Newsfeed" },
-                { cat: "E", name: "Terms" }, { cat: "E", name: "GST JSON" }, { cat: "E", name: "B2B Report" },
-                { cat: "F", name: "Strategy" }, { cat: "F", name: "Meetings" },
-                { cat: "G", name: "Free Pkg" }, { cat: "G", name: "Org Design" }
-            ];
+        const grid = document.getElementById('main-grid');
 
-            const color = d3.scaleOrdinal(d3.schemeCategory10);
+        projectData.forEach(section => {
+            // Create Card
+            const card = document.createElement('div');
+            card.className = 'category-card';
 
-            const nodes = data.map(d => ({
-                ...d,
-                radius: 50,
-                x: Math.random() * width,
-                y: Math.random() * height
-            }));
+            // Add Title
+            const title = document.createElement('div');
+            title.className = 'category-title';
+            title.innerText = section.cat;
+            card.appendChild(title);
 
-            const svg = d3.select("#canvas");
+            // Create Bubble Area
+            const area = document.createElement('div');
+            area.className = 'bubble-area';
 
-            const simulation = d3.forceSimulation(nodes)
-                .force("charge", d3.forceManyBody().strength(-100))
-                .force("center", d3.forceCenter(width / 2, height / 2))
-                .force("collide", d3.forceCollide().radius(55))
-                .on("tick", ticked);
+            // Add Tasks as Bubbles
+            section.tasks.forEach(taskName => {
+                const bubble = document.createElement('div');
+                bubble.className = 'task-bubble';
+                bubble.innerHTML = `<span>${taskName}</span>`;
+                
+                // Click to Edit
+                bubble.onclick = function() {
+                    const newName = prompt("Edit task name:", taskName);
+                    if (newName) {
+                        this.querySelector('span').innerText = newName;
+                    }
+                };
 
-            const node = svg.selectAll(".node")
-                .data(nodes)
-                .enter().append("g")
-                .attr("class", "node")
-                .call(d3.drag()
-                    .on("start", (e, d) => { if (!e.active) simulation.alphaTarget(0.3).restart(); d.fx = d.x; d.fy = d.y; })
-                    .on("drag", (e, d) => { d.fx = e.x; d.fy = e.y; })
-                    .on("end", (e, d) => { if (!e.active) simulation.alphaTarget(0); d.fx = null; d.fy = null; }));
-
-            node.append("circle")
-                .attr("r", 50)
-                .style("fill", d => color(d.cat));
-
-            node.append("text")
-                .text(d => d.name)
-                .attr("dy", ".3em");
-
-            function ticked() {
-                node.attr("transform", d => `translate(${d.x},${d.y})`);
-            }
-
-            node.on("click", function(event, d) {
-                const n = prompt("Rename:", d.name);
-                if (n) { d.name = n; d3.select(this).select("text").text(n); }
+                area.appendChild(bubble);
             });
-        };
+
+            card.appendChild(area);
+            grid.appendChild(card);
+        });
     </script>
 </body>
 </html>
