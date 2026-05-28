@@ -3,74 +3,74 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Project Bubble Workspace</title>
+    <title>Project Roadmap Overview</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/7.8.5/d3.min.js"></script>
     <style>
-        body { font-family: 'Inter', sans-serif; background: #121212; color: white; margin: 0; overflow: hidden; }
-        #canvas { width: 100vw; height: 100vh; }
-        .node circle { cursor: grab; stroke-width: 2px; }
-        .node text { pointer-events: none; text-anchor: middle; font-size: 11px; fill: white; font-weight: 400; }
-        .parent circle { fill: #1a73e8; stroke: #4285f4; }
-        .parent text { font-weight: bold; font-size: 14px; }
-        .child circle { fill: #333; stroke: #555; }
-        #edit-box { position: absolute; display: none; background: #222; padding: 10px; border-radius: 5px; border: 1px solid #444; z-index: 100; }
-        input { background: #333; color: white; border: 1px solid #555; padding: 5px; outline: none; }
-        .instruction { position: absolute; bottom: 20px; left: 20px; color: #888; font-size: 12px; }
+        body { font-family: 'Segoe UI', sans-serif; background: #f8f9fa; margin: 0; overflow: hidden; }
+        #controls { position: absolute; top: 10px; left: 10px; z-index: 10; background: white; padding: 10px; border-radius: 5px; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
+        .node circle { stroke: #fff; stroke-width: 1.5px; cursor: pointer; }
+        .node text { pointer-events: none; text-anchor: middle; font-size: 10px; fill: #333; font-weight: 600; }
+        .category-label { font-size: 14px; font-weight: bold; fill: #555; pointer-events: none; }
     </style>
 </head>
 <body>
 
-    <div id="edit-box"><input type="text" id="edit-input"></div>
-    <div class="instruction">Drag to move • Click to edit name</div>
-    <div id="canvas"></div>
+    <div id="controls"><strong>Status:</strong> Drag bubbles to organize. Click to edit (Console).</div>
+    <svg id="chart"></svg>
 
     <script>
-        const width = window.innerWidth, height = window.innerHeight;
+        const width = window.innerWidth;
+        const height = window.innerHeight;
 
-        // Structured Data from your project details
-        const data = {
-            name: "Project",
-            children: [
-                { name: "A. Low Server Impact", children: [{name: "File Upload"}, {name: "Import Limits"}, {name: "User Limits"}] },
-                { name: "B. Payment Process", children: [{name: "Yearly Packages"}, {name: "Upgrades"}, {name: "Paid Badge"}] },
-                { name: "C. Self Start", children: [{name: "Flow Check"}, {name: "Mobile Start"}, {name: "Gmail Int."}, {name: "Webinar"}] },
-                { name: "D. Infection", children: [{name: "Doc Delivery"}, {name: "Retargeting"}, {name: "Newsfeed"}, {name: "Webstore"}] },
-                { name: "F. Fundraise", children: [{name: "Strategy"}, {name: "Meeting AAP/AU"}] },
-                { name: "G. Go-Live", children: [{name: "Free Pkg"}, {name: "Org Design"}, {name: "Teaser 2.5L"}] },
-                { name: "E. Legal Protection", children: [{name: "Terms (DPDP)"}, {name: "GST JSON"}, {name: "B2B Report"}] }
-            ]
-        };
+        const data = [
+            { cat: "A. Server", name: "File Upload" }, { cat: "A. Server", name: "Import Limits" }, { cat: "A. Server", name: "User Limits" },
+            { cat: "B. Payment", name: "Upgrades" }, { cat: "B. Payment", name: "Yearly Pkg" }, { cat: "B. Payment", name: "Videos" }, { cat: "B. Payment", name: "Paid Badge" },
+            { cat: "C. Support", name: "Flow Check" }, { cat: "C. Support", name: "Mobile Start" }, { cat: "C. Support", name: "Notifications" }, { cat: "C. Support", name: "Gmail Int." },
+            { cat: "D. Infection", name: "Doc Delivery" }, { cat: "D. Infection", name: "Retargeting" }, { cat: "D. Infection", name: "Branding" }, { cat: "D. Infection", name: "Newsfeed" },
+            { cat: "E. Legal", name: "Terms" }, { cat: "E. Legal", name: "GST JSON" }, { cat: "E. Legal", name: "B2B Report" },
+            { cat: "F. Fundraise", name: "Strategy" }, { cat: "F. Fundraise", name: "Meetings" },
+            { cat: "G. Go-Live", name: "Free Pkg" }, { cat: "G. Go-Live", name: "Org Design" }, { cat: "G. Go-Live", name: "Trust Content" }
+        ];
 
-        // Flatten data for the simulation
-        const nodes = [];
-        const links = [];
-        data.children.forEach((cat, i) => {
-            nodes.push({ id: cat.name, group: 'parent', radius: 60 });
-            cat.children.forEach(sub => {
-                nodes.push({ id: sub.name, group: 'child', radius: 40 });
-                links.push({ source: cat.name, target: sub.name });
-            });
-        });
+        const categories = [...new Set(data.map(d => d.cat))];
+        const color = d3.scaleOrdinal().domain(categories).range(d3.schemeTableau10);
 
-        const svg = d3.select("#canvas").append("svg").attr("width", width).attr("height", height);
+        const nodes = data.map((d, i) => ({
+            ...d,
+            radius: d.name.length * 2 + 30, // Size based on text length
+            x: Math.random() * width,
+            y: Math.random() * height
+        }));
 
+        const svg = d3.select("#chart")
+            .attr("width", width)
+            .attr("height", height);
+
+        // Force Simulation to keep them grouped by category
         const simulation = d3.forceSimulation(nodes)
-            .force("link", d3.forceLink(links).id(d => d.id).distance(80))
-            .force("charge", d3.forceManyBody().strength(-300))
-            .force("center", d3.forceCenter(width / 2, height / 2))
-            .force("collision", d3.forceCollide().radius(d => d.radius + 5))
+            .force("x", d3.forceX(d => (categories.indexOf(d.cat) % 4) * (width/4) + 150).strength(0.1))
+            .force("y", d3.forceY(d => Math.floor(categories.indexOf(d.cat) / 4) * (height/2) + 150).strength(0.1))
+            .force("collide", d3.forceCollide(d => d.radius + 2))
+            .force("charge", d3.forceManyBody().strength(-10))
             .on("tick", ticked);
 
-        const node = svg.append("g")
-            .selectAll("g")
+        const node = svg.selectAll(".node")
             .data(nodes)
-            .join("g")
-            .attr("class", d => `node ${d.group}`)
-            .call(d3.drag().on("start", dragstarted).on("drag", dragged).on("end", dragended))
-            .on("click", (event, d) => editNode(event, d));
+            .enter().append("g")
+            .attr("class", "node")
+            .call(d3.drag()
+                .on("start", dragstarted)
+                .on("drag", dragged)
+                .on("end", dragended));
 
-        node.append("circle").attr("r", d => d.radius);
-        node.append("text").text(d => d.id).attr("dy", 4);
+        node.append("circle")
+            .attr("r", d => d.radius)
+            .style("fill", d => color(d.cat))
+            .style("opacity", 0.8);
+
+        node.append("text")
+            .text(d => d.name)
+            .attr("dy", ".3em");
 
         function ticked() {
             node.attr("transform", d => `translate(${d.x},${d.y})`);
@@ -80,27 +80,8 @@
             if (!event.active) simulation.alphaTarget(0.3).restart();
             d.fx = d.x; d.fy = d.y;
         }
-        function dragged(event, d) { d.fx = event.x; d.fy = event.y; }
-        function dragended(event, d) {
-            if (!event.active) simulation.alphaTarget(0);
-            d.fx = null; d.fy = null;
-        }
 
-        function editNode(event, d) {
-            const box = document.getElementById('edit-box');
-            const input = document.getElementById('edit-input');
-            box.style.display = 'block';
-            box.style.left = event.pageX + 'px';
-            box.style.top = event.pageY + 'px';
-            input.value = d.id;
-            input.onkeydown = (e) => {
-                if (e.key === 'Enter') {
-                    d.id = input.value;
-                    node.select("text").text(n => n.id);
-                    box.style.display = 'none';
-                }
-            };
+        function dragged(event, d) {
+            d.fx = event.x;
+            d.fy = event.y;
         }
-    </script>
-</body>
-</html>
