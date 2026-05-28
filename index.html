@@ -3,80 +3,118 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Project Task Dashboard</title>
+    <title>Biziverse Project Dashboard</title>
     <style>
-        :root { --bg: #121212; --card: #1e1e1e; --text: #e0e0e0; }
-        body { font-family: 'Segoe UI', sans-serif; background: var(--bg); color: var(--text); margin: 0; padding: 20px; }
+        /* Biziverse Inspired Color Palette */
+        :root {
+            --biz-navy: #0d2144;      /* Deep Navy */
+            --biz-blue: #1e88e5;      /* Primary Bright Blue */
+            --biz-light-bg: #f4f7fa;  /* Light Background */
+            --biz-white: #ffffff;
+            --biz-gray: #607d8b;
+        }
+
+        body { 
+            font-family: 'Segoe UI', Roboto, sans-serif; 
+            background: var(--biz-light-bg); 
+            color: var(--biz-navy); 
+            margin: 0; 
+            padding: 20px; 
+        }
         
-        h1 { margin-bottom: 20px; color: #4285f4; }
+        header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 30px;
+            border-bottom: 3px solid var(--biz-blue);
+            padding-bottom: 10px;
+        }
+
+        h1 { 
+            margin: 0; 
+            font-size: 24px; 
+            color: var(--biz-navy);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
 
         .grid-container {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 20px;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 25px;
             max-width: 1400px;
             margin: 0 auto;
         }
 
         .category-card {
-            background: var(--card);
-            border-radius: 12px;
-            padding: 15px;
-            border: 1px solid #333;
-            min-height: 250px;
+            background: var(--biz-white);
+            border-radius: 8px;
+            padding: 20px;
+            box-shadow: 0 4px 12px rgba(13, 33, 68, 0.08);
+            border-top: 5px solid var(--biz-navy);
+            transition: transform 0.2s;
+        }
+
+        .category-card:hover {
+            transform: translateY(-5px);
         }
 
         .category-title {
             font-size: 1.1rem;
-            font-weight: bold;
-            margin-bottom: 15px;
-            padding-bottom: 8px;
-            border-bottom: 2px solid #4285f4;
-            color: #fff;
+            font-weight: 700;
+            margin-bottom: 20px;
+            color: var(--biz-navy);
+            display: flex;
+            justify-content: space-between;
         }
 
         .bubble-area {
             display: flex;
             flex-wrap: wrap;
-            gap: 10px;
-            justify-content: center;
+            gap: 12px;
+            justify-content: flex-start;
         }
 
+        /* Bubble Styling */
         .task-bubble {
-            background: #2c2c2c;
-            border: 1px solid #444;
+            background: var(--biz-white);
+            border: 2px solid var(--biz-blue);
+            color: var(--biz-navy);
             border-radius: 50%;
-            width: 80px;
-            height: 80px;
+            width: 85px;
+            height: 85px;
             display: flex;
             align-items: center;
             justify-content: center;
             text-align: center;
             font-size: 11px;
-            padding: 5px;
+            font-weight: 600;
+            padding: 8px;
             cursor: pointer;
-            transition: all 0.2s;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.3);
-            overflow: hidden;
+            transition: all 0.3s ease;
+            box-shadow: 0 2px 5px rgba(30, 136, 229, 0.2);
+            line-height: 1.2;
         }
 
         .task-bubble:hover {
-            transform: scale(1.1);
-            background: #3d3d3d;
-            border-color: #4285f4;
+            background: var(--biz-blue);
+            color: white;
+            box-shadow: 0 5px 15px rgba(30, 136, 229, 0.4);
+            transform: scale(1.05);
         }
 
-        /* Styling for the Add Button */
+        /* Add Button Specific Style */
         .add-btn {
-            background: transparent;
-            border: 2px dashed #4285f4;
-            color: #4285f4;
-            font-size: 24px;
-            font-weight: bold;
+            background: #e3f2fd;
+            border: 2px dashed var(--biz-blue);
+            color: var(--biz-blue);
+            font-size: 28px;
         }
 
         .add-btn:hover {
-            background: rgba(66, 133, 244, 0.1);
+            background: var(--biz-blue);
+            color: white;
+            border-style: solid;
         }
 
         .task-bubble span {
@@ -87,24 +125,25 @@
 </head>
 <body>
 
-    <h1>Freemium Project: Bubble Chart</h1>
+    <header>
+        <h1>Biziverse Project Tracker</h1>
+    </header>
     
     <div class="grid-container" id="main-grid"></div>
 
     <script>
         const projectData = [
             { cat: "A. Low Server Impact", tasks: ["File upload", "Import Limits", "User limits"] },
-            { cat: "B. Payment Process", tasks: ["Upgrade All", "Yearly Pkg", "Feature Videos", "Paid Badge"] },
-            { cat: "C. Self Start", tasks: ["Flow check", "Mobile Start", "Daily Notif", "Gmail Int.", "Webinar"] },
+            { cat: "B. Payment Process", tasks: ["Upgrade All", "Yearly Pkg", "Videos", "Paid Badge"] },
+            { cat: "C. Self Start", tasks: ["Flow check", "Mobile", "Daily Notif", "Gmail Int."] },
             { cat: "D. Infection", tasks: ["Doc Delivery", "Ads/Pixels", "Newsfeed", "Webstore"] },
-            { cat: "E. Legal Protection", tasks: ["IT/DPDP Terms", "GST JSON", "B2B Report", "Temp Links"] },
+            { cat: "E. Legal Protection", tasks: ["IT/DPDP", "GST JSON", "B2B Report"] },
             { cat: "F. Fundraise", tasks: ["Strategy", "Meetings"] },
-            { cat: "G. Go-Live", tasks: ["Free Pkg", "Org Design", "2.5L Teaser", "Trust Content"] }
+            { cat: "G. Go-Live", tasks: ["Free Pkg", "Org Design", "2.5L Teaser"] }
         ];
 
         const grid = document.getElementById('main-grid');
 
-        // Function to create a task bubble with edit functionality
         function createBubble(taskName) {
             const bubble = document.createElement('div');
             bubble.className = 'task-bubble';
@@ -130,21 +169,19 @@
             const area = document.createElement('div');
             area.className = 'bubble-area';
 
-            // Add existing sub-tasks
             section.tasks.forEach(taskName => {
                 area.appendChild(createBubble(taskName));
             });
 
-            // Add the "+" button bubble
             const addBtn = document.createElement('div');
             addBtn.className = 'task-bubble add-btn';
             addBtn.innerText = '+';
 
             addBtn.onclick = function() {
-                const newTask = prompt("Enter new sub-task name:");
+                const newTask = prompt("Enter new task name:");
                 if (newTask) {
                     const newBubble = createBubble(newTask);
-                    area.insertBefore(newBubble, addBtn); // Adds bubble before the button
+                    area.insertBefore(newBubble, addBtn);
                 }
             };
 
