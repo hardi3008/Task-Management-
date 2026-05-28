@@ -85,3 +85,22 @@
             d.fx = event.x;
             d.fy = event.y;
         }
+
+        function dragended(event, d) {
+            if (!event.active) simulation.alphaTarget(0);
+            d.fx = null;
+            d.fy = null;
+        }
+
+        // Simple click-to-edit rename
+        node.on("click", function(event, d) {
+            const newName = prompt("Rename task:", d.name);
+            if (newName) {
+                d.name = newName;
+                d3.select(this).select("text").text(newName);
+            }
+        });
+
+    </script>
+</body>
+</html>
