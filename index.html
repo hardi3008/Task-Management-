@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Students' Grievance Handling System - Peach Technovations</title>
+    <title>Genie ERP - Students' Grievance Handling System</title>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Segoe+UI:wght@400;600;700&display=swap');
         
@@ -20,7 +20,7 @@
             background-color: #fcfbfa;
         }
 
-        /* Top Header Navigation */
+        /* Top Header Navigation Dashboard */
         header {
             background-color: #23374d;
             border-bottom: 5px solid #d36418;
@@ -39,24 +39,29 @@
             gap: 15px;
         }
 
-        /* Standardized Logo Img Container */
+        /* Logo Component Container */
         .logo-img {
-            height: 65px;
+            height: 60px;
             width: auto;
             object-fit: contain;
         }
 
         .logo-text-area h1 {
-            font-size: 20px;
+            font-size: 24px;
             font-weight: 700;
             letter-spacing: 0.5px;
             color: #ffffff;
         }
 
+        .logo-text-area h1 span {
+            color: #d36418;
+        }
+
         .logo-text-area p {
-            font-size: 12px;
+            font-size: 11px;
             color: #cbd5e1;
             letter-spacing: 1px;
+            text-transform: uppercase;
         }
 
         .contact-btn {
@@ -74,7 +79,7 @@
             background-color: #b55312;
         }
 
-        /* Hero Showcase Section */
+        /* Hero System Showcase */
         .hero {
             background-color: #ffffff;
             padding: 60px 5%;
@@ -83,9 +88,9 @@
         }
 
         .hero h2 {
-            font-size: 32px;
+            font-size: 34px;
             color: #23374d;
-            margin-bottom: 10px;
+            margin-bottom: 12px;
         }
 
         .hero p {
@@ -122,8 +127,14 @@
         .section-title {
             color: #23374d;
             font-size: 26px;
-            margin-bottom: 30px;
+            margin-bottom: 10px;
             font-weight: 700;
+        }
+
+        .section-subtitle {
+            color: #666;
+            font-size: 15px;
+            margin-bottom: 35px;
         }
 
         .workflow-grid {
@@ -131,7 +142,7 @@
             grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
             gap: 20px;
             max-width: 1200px;
-            margin: 20px auto 0 auto;
+            margin: 0 auto;
         }
 
         .wf-card {
@@ -149,7 +160,7 @@
             margin-bottom: 10px;
         }
 
-        /* Features Split Grid */
+        /* Split Info Architecture Grid */
         .main-content {
             padding: 60px 5%;
             max-width: 1200px;
@@ -195,7 +206,7 @@
             top: -2px;
         }
 
-        /* Configurable Categories Grid */
+        /* Configurable Categories Architecture */
         .categories-section {
             background-color: #ffffff;
             padding: 60px 5%;
@@ -243,7 +254,7 @@
             box-shadow: 0 4px 15px rgba(211,100,24,0.08);
             border-radius: 4px;
             padding: 40px 30px;
-            max-width: 450px;
+            max-width: 480px;
             margin: 30px auto 0 auto;
         }
 
@@ -272,7 +283,7 @@
             color: #4a4a4a;
         }
 
-        /* Product Showcase Section */
+        /* Integrated Ecosystem Product Showcase */
         .products-section {
             padding: 60px 5%;
             background-color: #ffffff;
@@ -282,10 +293,10 @@
 
         .products-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
             gap: 25px;
             max-width: 1200px;
-            margin: 30px auto 0 auto;
+            margin: 35px auto 0 auto;
         }
 
         .product-card {
@@ -294,28 +305,32 @@
             padding: 25px;
             border-radius: 4px;
             text-align: center;
-        }
-
-        .prod-logo-placeholder {
-            height: 50px;
-            margin-bottom: 15px;
             display: flex;
+            flex-direction: column;
             align-items: center;
-            justify-content: center;
-            font-weight: 700;
-            font-size: 18px;
         }
 
-        .prod-act { color: #d36418; }
-        .prod-track { color: #d36418; font-weight: bold; }
-        .prod-erp { color: #23374d; font-weight: bold; }
+        .prod-img {
+            height: 55px;
+            width: auto;
+            object-fit: contain;
+            margin-bottom: 15px;
+        }
+
+        .product-card h5 {
+            font-size: 16px;
+            color: #23374d;
+            margin-bottom: 8px;
+            font-weight: 600;
+        }
 
         .product-card p {
             font-size: 13px;
             color: #666666;
+            line-height: 1.4;
         }
 
-        /* Footer Section */
+        /* Footer Frame */
         footer {
             background-color: #23374d;
             color: white;
@@ -346,20 +361,19 @@
 </head>
 <body>
 
-    <!-- Top Header Navigation -->
+    <!-- Header Frame Layout linking to active image hooks -->
     <header>
         <div class="brand-container">
-            <!-- Image tag link layout to use your high-res file seamlessly -->
-            <img class="logo-img" src="logo.png" alt="Peach Technovations Logo">
+            <img class="logo-img" src="logo.png" alt="Genie ERP Logo">
             <div class="logo-text-area">
-                <h1>Peach Technovations Private Limited</h1>
-                <p>innovation • integrity • impact</p>
+                <h1>Genie<span>ERP</span></h1>
+                <p>A Creation of Peach Technovations Pvt. Ltd.</p>
             </div>
         </div>
-        <a href="#contact" class="contact-btn">Request a Demo</a>
+        <a href="#demo" class="contact-btn">Request Campus Demo</a>
     </header>
 
-    <!-- Hero Showcase Section -->
+    <!-- Hero Framework Showcase -->
     <section class="hero">
         <h2>Students' Grievance Handling System for Colleges</h2>
         <p>Phone Helpline and Web-portal based system with Mobile App for Monitoring</p>
@@ -370,9 +384,10 @@
         </div>
     </section>
 
-    <!-- System Workflow Block -->
+    <!-- Flow Matrix -->
     <section class="workflow-section">
         <h3 class="section-title">How the System Works</h3>
+        <p class="section-subtitle">A fully managed tracking layout engineered to absorb campus administrative friction.</p>
         <div class="workflow-grid">
             <div class="wf-card">
                 <div class="wf-number">01</div>
@@ -397,7 +412,7 @@
         </div>
     </section>
 
-    <!-- Features Split Grid -->
+    <!-- Structural Matrix Display -->
     <section class="main-content">
         <div class="content-box">
             <h3>Benefits to the Institution</h3>
@@ -416,7 +431,7 @@
         </div>
     </section>
 
-    <!-- Configurable Categories Grid -->
+    <!-- Category System Modules -->
     <section class="categories-section">
         <h3 class="section-title">Configurable Complaint Types Covered</h3>
         <div class="categories-grid">
@@ -447,7 +462,7 @@
         </div>
     </section>
 
-    <!-- Commercial / Pricing Structure -->
+    <!-- Flat Commercial Section Model -->
     <section class="pricing-section">
         <h3 class="section-title">Proven Helpline Services at a Minimal Cost</h3>
         <p style="color: #555;">Get absolute peace of mind with no setup fees and no upfront operational changes.</p>
@@ -455,41 +470,54 @@
             <h4>Software Subscription Plan</h4>
             <div class="price-rate">₹6,000 <span>/ month</span></div>
             <p style="margin-bottom: 15px; font-weight: 600; color: #23374d;">No Onetime Cost • Includes Helpline Operator Service</p>
-            <p>Complete deployment including comprehensive software access bundled alongside centralized managed live operator services to satisfy regulatory evaluations.</p>
+            <p>Complete structural implementation including platform configurations, real-time ticket auto-routing matrix configurations, and comprehensive management analysis reports.</p>
         </div>
     </section>
 
-    <!-- Other Products Portfolio Showcase -->
+    <!-- Integrated B2B Cross-Sell Grid Portfolio -->
     <section id="products" class="products-section">
         <h3 class="section-title">Our Ecosystem of e-Governance Products</h3>
-        <p style="color: #555; max-width: 700px; margin: 0 auto;">Explore other trusted software solutions engineered by Peach Technovations across municipal, commercial, and administrative domains.</p>
+        <p style="color: #555; max-width: 700px; margin: 0 auto;">Explore the suite of enterprise applications developed by Peach Technovations to streamline infrastructure across public and private segments.</p>
         <div class="products-grid">
             <div class="product-card">
-                <div class="prod-logo-placeholder prod-act">ActPlease.com</div>
-                <p>Triggering Actions, Winning Smiles. Robust action tracking system designed to streamline tasks and track resolutions seamlessly.</p>
+                <img class="prod-img" src="SaralOffice.png" alt="Saral Office">
+                <h5>Saral Office</h5>
+                <p>Management Toolkit for Businesses & Corporations. Streamlines file tracking, daily logs, and operational team performance indexes seamlessly.</p>
             </div>
             <div class="product-card">
-                <div class="prod-logo-placeholder prod-track">📍 Track-Smart</div>
-                <p>Smart location monitoring and geo-tracking asset management framework built to handle critical field operations.</p>
+                <img class="prod-img" src="campusLyf.png" alt="CampusLyf">
+                <h5>CampusLyf</h5>
+                <p>Go-to App for College Campuses. Connects students, academic schedules, and administrative networks within one secure unified space.</p>
             </div>
             <div class="product-card">
-                <div class="prod-logo-placeholder prod-erp"><span style="color:#d36418;">e</span> ElectroERP</div>
-                <p>Enterprise resource planning tool custom tailored for heavy industrial automation, calculations, and smooth workflows.</p>
+                <img class="prod-img" src="electroERP.png" alt="Electro ERP">
+                <h5>Electro ERP</h5>
+                <p>ERP for Electronics Product Mfrs & EMS Industries. Tailored component sourcing calculations, bill of materials tracking, and manufacturing inventory.</p>
+            </div>
+            <div class="product-card">
+                <img class="prod-img" src="trackSmart.png" alt="Track-Smart">
+                <h5>Track-Smart</h5>
+                <p>Smart Solution for Easy & Effective Customer Service. High-precision live location mapping tool for logistical optimization.</p>
+            </div>
+            <div class="product-card">
+                <img class="prod-img" src="expomdn.png" alt="Expo Maidan">
+                <h5>Expo Maidan</h5>
+                <p>Powerful Platform for Online Tradeshows. Virtual exhibition architectures managing stall displays, multi-user visual layouts, and smooth B2B networking.</p>
             </div>
         </div>
     </section>
 
-    <!-- Footer Section -->
-    <footer id="contact">
+    <!-- Footer System Frame -->
+    <footer id="demo">
         <div class="footer-content">
             <div class="footer-info" style="text-align: left;">
-                <p><strong>Peach Technovations Private Limited</strong></p>
+                <p><strong>Genie ERP & Peach Technovations Pvt. Ltd.</strong></p>
                 <p>Providing trusted e-Governance Software & Services across Gujarat since 2006.</p>
                 <p>Address: A/44 GIDC Electronics Estate, Gandhinagar, Gujarat 382016</p>
             </div>
             <div style="text-align: right;">
-                <p><strong>Email:</strong> haren@peachcomp.com</p>
-                <p><strong>Phone / WhatsApp:</strong> 94276-13237</p>
+                <p><strong>Email Contacts:</strong> sales@genieerp.com | sales@peachcomp.com</p>
+                <p><strong>Support Phone Lines:</strong> (+91) 85 11 11 5588 | (+91) 85 11 22 9999</p>
             </div>
         </div>
     </footer>
