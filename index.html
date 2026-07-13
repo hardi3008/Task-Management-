@@ -3,162 +3,429 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Biziverse Project Master</title>
+    <title>Students' Grievance Handling System - Peach Technovations</title>
     <style>
-        :root {
-            --biz-navy: #0d2144;
-            --biz-orange: #ff6d00;
-            --biz-blue: #1e88e5;
-            --bg: #f4f7fa;
+        @import url('https://fonts.googleapis.com/css2?family=Segoe+UI:wght@400;600;700&display=swap');
+        
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
         }
 
-        body { font-family: 'Segoe UI', sans-serif; background: var(--bg); color: var(--biz-navy); margin: 0; padding: 20px; }
-        
-        .header-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px; border-bottom: 3px solid var(--biz-navy); padding-bottom: 15px; }
-        
-        .today-btn { 
-            background: var(--biz-orange); color: white; border: none; padding: 12px 24px; 
-            border-radius: 25px; font-weight: bold; cursor: pointer; box-shadow: 0 4px 15px rgba(255,109,0,0.3);
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333333;
+            background-color: #f7f9fc;
+        }
+
+        /* Top Header Navigation */
+        header {
+            background-color: #0b3c5d;
+            border-bottom: 4px solid #ff6b00;
+            padding: 15px 5%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            color: #ffffff;
+        }
+
+        .logo-area h1 {
+            font-size: 22px;
+            font-weight: 700;
+            letter-spacing: 0.5px;
+        }
+
+        .logo-area p {
+            font-size: 12px;
+            color: #b0c4de;
+            font-style: italic;
+        }
+
+        .contact-btn {
+            background-color: #ff6b00;
+            color: white;
+            padding: 10px 20px;
+            text-decoration: none;
+            font-weight: 600;
+            border-radius: 4px;
+            font-size: 14px;
             transition: 0.3s;
         }
-        .today-btn:hover { background: var(--biz-navy); transform: scale(1.05); }
 
-        .grid-container { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 20px; }
-
-        .category-card { background: white; border-radius: 12px; padding: 20px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); min-height: 200px; }
-        .category-title { font-size: 1.1rem; font-weight: 800; margin-bottom: 15px; color: var(--biz-navy); border-left: 5px solid var(--biz-orange); padding-left: 10px; }
-
-        .bubble-area { display: flex; flex-wrap: wrap; gap: 15px; }
-
-        .task-bubble {
-            background: white; border: 2px solid var(--biz-blue); border-radius: 50%;
-            width: 95px; height: 95px; display: flex; flex-direction: column;
-            align-items: center; justify-content: center; text-align: center;
-            font-size: 10px; font-weight: 600; cursor: pointer; transition: 0.2s; position: relative;
-        }
-        .task-bubble:hover { border-color: var(--biz-orange); transform: translateY(-3px); }
-
-        .founder-tag {
-            position: absolute; bottom: -8px; background: var(--biz-navy); color: white;
-            padding: 2px 10px; border-radius: 12px; font-size: 9px; white-space: nowrap;
-            border: 1px solid var(--biz-orange);
+        .contact-btn:hover {
+            background-color: #e05e00;
         }
 
-        .add-btn { border: 2px dashed #999; color: #999; font-size: 28px; }
-        .add-btn:hover { color: var(--biz-orange); border-color: var(--biz-orange); }
-
-        /* Report Modal */
-        #report-overlay {
-            display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(13, 33, 68, 0.95); z-index: 1000; justify-content: center; align-items: center;
+        /* Hero Showcase Section */
+        .hero {
+            background-color: #ffffff;
+            padding: 60px 5%;
+            text-align: center;
+            border-bottom: 1px solid #e2e8f0;
         }
-        .report-content { background: white; padding: 30px; border-radius: 15px; width: 90%; max-width: 500px; color: var(--biz-navy); max-height: 80vh; overflow-y: auto; }
-        .report-item { margin-bottom: 15px; padding: 10px; border-radius: 8px; background: #f9f9f9; border-left: 4px solid var(--biz-orange); }
-        .report-item h3 { color: var(--biz-navy); margin: 0 0 5px 0; font-size: 1.2rem; }
-        .close-report { float: right; cursor: pointer; color: var(--biz-orange); font-weight: bold; }
+
+        .hero h2 {
+            font-size: 32px;
+            color: #0b3c5d;
+            margin-bottom: 10px;
+        }
+
+        .hero p {
+            font-size: 18px;
+            color: #555555;
+            max-width: 800px;
+            margin: 0 auto 30px auto;
+        }
+
+        .badge-container {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            flex-wrap: wrap;
+        }
+
+        .badge {
+            background-color: #e6f0fa;
+            color: #0b3c5d;
+            padding: 8px 16px;
+            font-size: 13px;
+            font-weight: 600;
+            border-radius: 20px;
+            border: 1px solid #b0c4de;
+        }
+
+        /* System Workflow Block */
+        .workflow-section {
+            padding: 50px 5%;
+            background-color: #f0f4f8;
+            text-align: center;
+        }
+
+        .section-title {
+            color: #0b3c5d;
+            font-size: 24px;
+            margin-bottom: 30px;
+            position: relative;
+        }
+
+        .workflow-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-top: 20px;
+        }
+
+        .wf-card {
+            background: white;
+            padding: 25px 20px;
+            border-radius: 6px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+            border-top: 3px solid #0b3c5d;
+        }
+
+        .wf-number {
+            font-size: 24px;
+            font-weight: 700;
+            color: #ff6b00;
+            margin-bottom: 10px;
+        }
+
+        /* Features Split Grid */
+        .main-content {
+            padding: 60px 5%;
+            max-width: 1200px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 40px;
+        }
+
+        @media (max-width: 768px) {
+            .main-content { grid-template-columns: 1fr; }
+        }
+
+        .content-box {
+            background: white;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+        }
+
+        .content-box h3 {
+            color: #0b3c5d;
+            margin-bottom: 20px;
+            border-bottom: 2px solid #f0f4f8;
+            padding-bottom: 10px;
+        }
+
+        .list-item {
+            margin-bottom: 15px;
+            padding-left: 25px;
+            position: relative;
+            font-size: 15px;
+        }
+
+        .list-item::before {
+            content: "✓";
+            position: absolute;
+            left: 0;
+            color: #ff6b00;
+            font-weight: bold;
+        }
+
+        /* Configurable Categories Grid */
+        .categories-section {
+            background-color: #ffffff;
+            padding: 60px 5%;
+            text-align: center;
+        }
+
+        .categories-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 20px;
+            max-width: 1200px;
+            margin: 30px auto 0 auto;
+        }
+
+        .cat-card {
+            background: #f8fafc;
+            border: 1px solid #e2e8f0;
+            padding: 20px;
+            border-radius: 6px;
+            text-align: left;
+        }
+
+        .cat-card h4 {
+            color: #0b3c5d;
+            margin-bottom: 10px;
+        }
+
+        .cat-card p {
+            font-size: 14px;
+            color: #666666;
+        }
+
+        /* Commercial / Pricing Structure */
+        .pricing-section {
+            background-color: #f0f4f8;
+            padding: 60px 5%;
+            text-align: center;
+        }
+
+        .pricing-container {
+            display: flex;
+            justify-content: center;
+            gap: 30px;
+            max-width: 800px;
+            margin: 30px auto 0 auto;
+            flex-wrap: wrap;
+        }
+
+        .price-card {
+            background: white;
+            border: 2px solid #e2e8f0;
+            border-radius: 8px;
+            padding: 40px 30px;
+            flex: 1;
+            min-width: 280px;
+            transition: 0.3s;
+        }
+
+        .price-card.featured {
+            border-color: #ff6b00;
+            box-shadow: 0 4px 15px rgba(255,107,0,0.1);
+        }
+
+        .price-card h4 {
+            font-size: 18px;
+            color: #555555;
+        }
+
+        .price-card.featured h4 {
+            color: #0b3c5d;
+        }
+
+        .price-rate {
+            font-size: 36px;
+            font-weight: 700;
+            color: #0b3c5d;
+            margin: 20px 0;
+        }
+
+        .price-rate span {
+            font-size: 16px;
+            color: #777777;
+            font-weight: 400;
+        }
+
+        .price-card p {
+            font-size: 13px;
+            color: #666666;
+        }
+
+        /* Footer Section */
+        footer {
+            background-color: #0b3c5d;
+            color: white;
+            padding: 40px 5%;
+            text-align: center;
+            font-size: 14px;
+            border-top: 4px solid #ff6b00;
+        }
+
+        .footer-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+
+        @media (max-width: 600px) {
+            .footer-content { flex-direction: column; text-align: center; }
+        }
+
+        .footer-info p {
+            margin-bottom: 5px;
+        }
     </style>
 </head>
 <body>
 
-    <div class="header-row">
-        <h1>Biziverse Project Map</h1>
-        <button class="today-btn" onclick="showTodayTasks()">📅 Today's Tasks</button>
-    </div>
-    
-    <div class="grid-container" id="main-grid"></div>
-
-    <div id="report-overlay">
-        <div class="report-content">
-            <span class="close-report" onclick="closeReport()">[CLOSE]</span>
-            <h2>Assignment Summary</h2>
-            <div id="report-data"></div>
+    <!-- Top Header Navigation -->
+    <header>
+        <div class="logo-area">
+            <h1>Peach Technovations Private Limited</h1>
+            <p>innovation. integrity. impact. (Estd. 1990)</p>
         </div>
-    </div>
+        <a href="tel:9427613237" class="contact-btn">Call: 94276-13237</a>
+    </header>
 
-    <script>
-        const projectData = [
-            { cat: "A. Low Server Impact", tasks: ["File upload", "Import Limits", "User limits"] },
-            { cat: "B. Payment Process", tasks: ["Upgrade @ Everywhere", "Yearly packages", "Videos for features"] },
-            { cat: "C. Self Start", tasks: ["Flow check", "Start anywhere", "Daily notifications"] },
-            { cat: "D. Infection", tasks: ["Utility message", "Retargeting ads", "Newsfeed"] },
-            { cat: "E. Legal Protection", tasks: ["Terms (IT & DPDP)", "GST JSON", "B2B reporting"] }
-        ];
+    <!-- Hero Showcase Section -->
+    <section class="hero">
+        <h2>Students' Grievance Handling System for Colleges</h2>
+        <p>Phone Helpline and Web-portal based system with Mobile App for Monitoring</p>
+        <div class="badge-container">
+            <div class="badge">In line with NAAC Compliance</div>
+            <div class="badge">Helpline Operator Included</div>
+            <div class="badge">Zero Onetime Cost</div>
+        </div>
+    </section>
 
-        const grid = document.getElementById('main-grid');
+    <!-- System Workflow Block -->
+    <section class="workflow-section">
+        <h3 class="section-title">How the System Works</h3>
+        <div class="workflow-grid">
+            <div class="wf-card">
+                <div class="wf-number">01</div>
+                <strong>Student Logs Complaint</strong>
+                <p style="font-size:14px; color:#555; margin-top:5px;">Student calls the phone helpline or enters it on the website portal.</p>
+            </div>
+            <div class="wf-card">
+                <div class="wf-number">02</div>
+                <strong>Operator Registers Ticket</strong>
+                <p style="font-size:14px; color:#555; margin-top:5px;">Our live helpline operator screens out spam and enters details into the system.</p>
+            </div>
+            <div class="wf-card">
+                <div class="wf-number">03</div>
+                <strong>System Auto-Forwards</strong>
+                <p style="font-size:14px; color:#555; margin-top:5px;">The complaint instantly drops to the concerned staff member via SMS routing.</p>
+            </div>
+            <div class="wf-card">
+                <div class="wf-number">04</div>
+                <strong>Officer Closes Issue</strong>
+                <p style="font-size:14px; color:#555; margin-top:5px;">The staff in-charge views details and closes the complaint on the Mobile App.</p>
+            </div>
+        </div>
+    </section>
 
-        // Function to create bubble with all features
-        function createBubble(taskName) {
-            const bubble = document.createElement('div');
-            bubble.className = 'task-bubble';
-            bubble.innerHTML = `<span>${taskName}</span><div class="founder-tag">Unassigned</div>`;
-            
-            bubble.onclick = function() {
-                const choice = prompt("Type '1' to Rename Task\nType '2' to Assign Person/Name");
-                
-                if (choice === "1") {
-                    const newName = prompt("Enter new task name:", this.querySelector('span').innerText);
-                    if (newName) this.querySelector('span').innerText = newName;
-                } else if (choice === "2") {
-                    const person = prompt("Enter Name to Assign:");
-                    if (person) this.querySelector('.founder-tag').innerText = person;
-                }
-            };
-            return bubble;
-        }
+    <!-- Features Split Grid -->
+    <section class="main-content">
+        <div class="content-box">
+            <h3>Benefits to the Institution</h3>
+            <div class="list-item"><strong>In line with NAAC Compliance:</strong> Meets strict online DVV document logs effortlessly.</div>
+            <div class="list-item"><strong>Greater Student Satisfaction:</strong> Solves issues internally before they leak onto social media.</div>
+            <div class="list-item"><strong>Increased Efficiency & Transparency:</strong> Real-time visibility into all pending department issues.</div>
+            <div class="list-item"><strong>Human Spam Filter:</strong> Our operators handle raw volumes so your management team has peace of mind.</div>
+        </div>
+        <div class="content-box">
+            <h3>Quick Action & Convenience</h3>
+            <div class="list-item">Register a complaint conveniently on Website or Phone, 24x7.</div>
+            <div class="list-item">Instant SMS Acknowledgement sent straight to the student.</div>
+            <div class="list-item">Mobile App to Monitor, Comment on, or Complete complaints on the go.</div>
+            <div class="list-item">Automated daily morning Report of unresolved complaints sent to management.</div>
+            <div class="list-item">Useful Analysis generated by Departments, Issues, and campus Wards.</div>
+        </div>
+    </section>
 
-        // Initialize Grid
-        projectData.forEach(section => {
-            const card = document.createElement('div');
-            card.className = 'category-card';
-            card.innerHTML = `<div class="category-title">${section.cat}</div>`;
-            
-            const area = document.createElement('div');
-            area.className = 'bubble-area';
+    <!-- Configurable Categories Grid -->
+    <section class="categories-section">
+        <h3 class="section-title">Configurable Complaint Types Covered</h3>
+        <div class="categories-grid">
+            <div class="cat-card">
+                <h4>Academics / Teaching</h4>
+                <p>Teaching Quality, No Faculty, Class Not Taken, Examination or Laboratory-related issues.</p>
+            </div>
+            <div class="cat-card">
+                <h4>Administrative Services</h4>
+                <p>Admissions, Fees / Charges / Receipts / Refunds, Work Delays, and Staff Behaviour tracking.</p>
+            </div>
+            <div class="cat-card">
+                <h4>Basic Campus Facilities</h4>
+                <p>Cleanliness, Toilets, Drinking Water, Ventilation / Fan / AC, Lighting / Ambience, and Parking.</p>
+            </div>
+            <div class="cat-card">
+                <h4>Computer Facilities</h4>
+                <p>Old / Slow Computers, Campus Internet Problems, Software Issues, and Printer Faults.</p>
+            </div>
+            <div class="cat-card">
+                <h4>Safety and Security</h4>
+                <p>Anti-Ragging compliance, Harassment by Students or Staff, and Sexual Harassment prevention metrics.</p>
+            </div>
+            <div class="cat-card">
+                <h4>Amenities & Infrastructure</h4>
+                <p>Canteen Food Quality, Cleanliness, Poor Library Services, Book Unavailability, and Noise Control.</p>
+            </div>
+        </div>
+    </section>
 
-            // Add initial tasks
-            section.tasks.forEach(t => area.appendChild(createBubble(t)));
+    <!-- Commercial / Pricing Structure -->
+    <section class="pricing-section">
+        <h3 class="section-title">Proven Helpline Services at a Minimal Cost</h3>
+        <p style="color: #555;">Get absolute peace of mind with no setup fees and no upfront operational changes.</p>
+        <div class="pricing-container">
+            <div class="price-card">
+                <h4>Monthly Plan</h4>
+                <div class="price-rate">₹6,000 <span>/ month</span></div>
+                <p>Includes full Software Subscription + Centralized Helpline Access + Shared Call Operator Support.</p>
+            </div>
+            <div class="price-card featured">
+                <h4>Annual Package</h4>
+                <div class="price-rate">₹60,000 <span>/ year</span></div>
+                <p>Locks in continuous 12-month data trails required for perfect NAAC audit validation and verification metrics.</p>
+            </div>
+        </div>
+    </section>
 
-            // Add the "+" Button
-            const addBtn = document.createElement('div');
-            addBtn.className = 'task-bubble add-btn';
-            addBtn.innerText = '+';
-            addBtn.onclick = function() {
-                const newTaskName = prompt("Enter new sub-task name:");
-                if (newTaskName) {
-                    area.insertBefore(createBubble(newTaskName), addBtn);
-                }
-            };
+    <!-- Footer Section -->
+    <footer>
+        <div class="footer-content">
+            <div class="footer-info" style="text-align: left;">
+                <p><strong>Peach Technovations Private Limited</strong></p>
+                <p>Providing trusted e-Governance Software & Services across Gujarat since 2006.</p>
+                <p>Address: A/44 GIDC Electronics Estate, Gandhinagar, Gujarat 382016</p>
+            </div>
+            <div style="text-align: right;">
+                <p><strong>Email:</strong> haren@peachcomp.com</p>
+                <p><strong>Phone / WhatsApp:</strong> 94276-13237</p>
+            </div>
+        </div>
+    </footer>
 
-            area.appendChild(addBtn);
-            card.appendChild(area);
-            grid.appendChild(card);
-        });
-
-        function showTodayTasks() {
-            const reportData = document.getElementById('report-data');
-            reportData.innerHTML = "";
-            const bubbles = document.querySelectorAll('.task-bubble:not(.add-btn)');
-            
-            let map = {};
-
-            bubbles.forEach(b => {
-                const name = b.querySelector('span').innerText;
-                const person = b.querySelector('.founder-tag').innerText;
-                if (!map[person]) map[person] = [];
-                map[person].push(name);
-            });
-
-            for (let person in map) {
-                const div = document.createElement('div');
-                div.className = 'report-item';
-                div.innerHTML = `<h3>${person}</h3><p>${map[person].join(', ')}</p>`;
-                reportData.appendChild(div);
-            }
-
-            document.getElementById('report-overlay').style.display = 'flex';
-        }
-
-        function closeReport() { document.getElementById('report-overlay').style.display = 'none'; }
-    </script>
 </body>
 </html>
